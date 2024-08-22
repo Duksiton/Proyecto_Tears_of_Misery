@@ -28,19 +28,24 @@ body {
     padding: 0;
     font-size: 1.2rem;
     background: #111;
+    
 }
 
+/* Header */
 header {
     position: relative;
     background: #1d1e1e;
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: center; 
     box-shadow: 0 15px 15px rgba(8, 0, 0, 0.05);
     z-index: 2;
+    width: 100%;
+    min-height: 80px; 
 }
 
+/* Logo */
 .logo {
     color: #fff;
     text-decoration: none;
@@ -50,6 +55,7 @@ header {
     letter-spacing: 0.1em;
     display: flex;
     align-items: center;
+    margin-right: auto;
 }
 
 .logo img {
@@ -59,6 +65,7 @@ header {
     filter: brightness(1.5);
 }
 
+/* Grupo de navegación */
 .group {
     margin-left: 50px; /* Ajusta la posición horizontal del grupo de navegación */
 
@@ -108,9 +115,53 @@ header {
     background: #ff0000;
 }
 
-.hr-color hr {
-    border-color: #ffbb00;
+.navigation {
+    display: flex;
+    gap: 15px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
+
+.navigation li {
+    margin: 0;
+}
+
+.navigation a {
+    position: relative;
+    text-decoration: none;
+    font-size: 1em;
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    transition: color 0.3s;
+}
+
+.navigation a::before {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    width: 100%;
+    height: 2px;
+    background: transparent;
+    transform: scaleX(0);
+    transition: transform 0.2s ease-in-out, background 0.3s ease;
+    transform-origin: right;
+}
+
+.navigation a:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+    background: #ff0000;
+}
+
+/* Línea horizontal color naranja */
+.hr-color hr {
+    border: none;
+    height: 2px;
+    background-color: #ffbb00;
+}
+
 
 /* BODY */
 body {
@@ -130,17 +181,12 @@ video {
 }
 
 header,
-.hr-color,
 footer {
     position: relative;
     z-index: 1;
 }
 
-.hr-color {
-    background: rgba(255, 255, 255, 0.5);
-    margin-top: -2px;
-    
-}
+
 
 .contenido {
     text-align: center;
@@ -233,9 +279,11 @@ footer {
 
 /* FOOTER */
 .pie-pagina {
+    margin-top: 80px;
     width: 100%;
     background-color: #030303;
 }
+
 
 .pie-pagina .grupo-1 {
     width: 100%;
@@ -245,6 +293,8 @@ footer {
     grid-gap: 50px;
     padding: 45px 0px;
 }
+
+
 
 .pie-pagina .grupo-1 .box figure {
     width: 100%;
@@ -357,3 +407,10 @@ footer {
 .pie-pagina small b {
     color: #ec994b;
 }
+ .hr-color-gris{
+    border-color: #2e2e2e;
+ }
+
+
+
+
