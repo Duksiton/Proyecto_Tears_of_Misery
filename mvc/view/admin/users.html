@@ -17,6 +17,8 @@
 	    <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
 	
 	
 	   <!--google material icon-->
@@ -38,11 +40,12 @@
 		   <h3><img src="./img/icon-logo.ico" class="img-fluid"/><span>Tears of Misery</span></h3>
 		</div>
 		<ul class="list-unstyled component m-0">
-		  <li class="active">
-		  <a href="#" class="dashboard"><i class="material-icons">dashboard</i>Inicio</a>
+		  <li class="">
+		  <a href="./admin.html" class="dashboard"><i class="material-icons">dashboard</i>Inicio</a>
 		  </li>
 		  
 		  <li class="dropdown">
+            <li class="active">
 			<a href="./users.html" class="users"><i class="material-icons">people</i>Usuarios</a>
 		  </li>
 		    
@@ -152,14 +155,14 @@
 					   <div class="table-title">
 					     <div class="row">
 						     <div class="col-sm-6 p-0 flex justify-content-lg-start justify-content-center">
-							    <h2 class="ml-lg-2">Administrar productos</h2>
+							    <h2 class="ml-lg-2">Administrar usuarios</h2>
 							 </div>
 							 <div class="col-sm-6 p-0 flex justify-content-lg-end justify-content-center">
-							   <a href="#agregarProducto" class="btn btn-success" data-toggle="modal">
+							   <a href="#agregarUsuario" class="btn btn-success" data-toggle="modal">
 							   <i class="material-icons">&#xE147;</i>
-							   <span>Agregar nuevo producto</span>
+							   <span>Agregar nuevo usuario</span>
 							   </a>
-							   <a href="#eliminarProducto" class="btn btn-danger" data-toggle="modal">
+							   <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal">
 							   <i class="material-icons">&#xE15C;</i>
 							   <span>Eliminar</span>
 							   </a>
@@ -173,12 +176,12 @@
 							<th><span class="custom-checkbox">
 							  <input type="checkbox" id="selectAll">
 							  <label for="selectAll"></label></th>
-							<th>Imagen</th>
 							<th>Nombre</th>
-							<th>Descripción</th>
-							<th>Precio</th>
-							<th>Stock</th>
-							<th>Categoría</th>
+							<th>Email</th>
+							<th>Contraseña</th>
+							<th>Dirección</th>
+							<th>Teléfono</th>
+							<th>Rol</th>
 							<th>Acciones</th>
 						  </tr>
 						</thead>
@@ -187,23 +190,28 @@
 							<th><span class="custom-checkbox">
 							  <input type="checkbox" id="checkbox1" name="option[]" value="1">
 							  <label for="checkbox1"></label></th>
-							<td><img src="/Proyecto Tears of Misery/assets/images/productos/camisas/camisas_dobles_tears.jpg" alt="Camisetas Conmemorativas" style="width: 50px; height: 50px;"></td>
-							<td>Camisetas Conmemorativas De Los 20 Años De Tears Of Misery</td>
-							<td>Camiseta conmemorativa del 20 aniversario</td>
-							<td>$65.000</td>
-							<td>En stock</td>
-							<td>Ropa</td>
+							<td>Usuario 1</td>
+							<td>user1@gmail.com</td>
 							<td>
-							  <a href="#editarProducto" class="edit" data-toggle="modal">
+                                <div class="input-group" style="margin-top: 10px;">
+                                    <input type="password" class="form-control" value="miContraseña" readonly id="contrasena1">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-outline-secondary" type="button" onclick="mostrarContrasena('contrasena1')"><i class="far fa-eye"></i></button>
+                                    </div>
+                                </div>
+                            </td>
+							<td>Calle 37 a bis sur</td>
+							<td>3227467685</td>
+							<td>Usuario</td>
+							<td>
+							  <a href="#editProductModal" class="edit" data-toggle="modal">
 								<i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
 							  </a>
-							  <a href="#eliminarProducto" class="delete" data-toggle="modal">
+							  <a href="#deleteProductModal" class="delete" data-toggle="modal">
 								<i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
 							  </a>
 							</td>
 						  </tr>
-						  <tr>
-							
 						</tbody>
 					  </table>
 					  
@@ -237,52 +245,49 @@
 					
 					
 									   <!----add-modal start--------->
-		<div class="modal fade" tabindex="-1" id="agregarProducto" role="dialog">
+		<div class="modal fade" tabindex="-1" id="agregarUsuario" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Agregar producto</h5>
+        <h5 class="modal-title">Agregar usuario</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-	  
-	  <div class="file-upload-container">
-		<div class="form-group">
-		<input type="file" id="file-upload" class="file-upload-input" required>
-		<label for="file-upload" class="file-upload-label">
-			<i class="fas fa-cloud-upload-alt"></i>
-			<span>Selecciona una imagen</span>
-		</label>
-		<div class="file-name"></div>
-	</div>
-	
-
-	</div>
       <div class="modal-body">
         <div class="form-group">
 		    <label>Nombre</label>
 			<input type="text" class="form-control" required>
 		</div>
 		<div class="form-group">
-		    <label>Descripción</label>
-			<input type="form-control" class="form-control" required>
+		    <label>Email</label>
+			<input type="email" class="form-control" required>
 		</div>
 		<div class="form-group">
-		    <label>Precio</label>
+            <label for="password">Contraseña</label>
+            <div class="input-group">
+                <input type="password" id="password" class="form-control" required>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility()">
+                        <i id="eye-icon" class="far fa-eye"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+		<div class="form-group">
+		    <label>Dirección</label>
 			<input type="text" class="form-control" required>
 		</div>
 		<div class="form-group">
-		    <label>Stock</label>
-			<input type="text" class="form-control" required>
+		    <label>Teléfono</label>
+			<input type="number" class="form-control" required>
 		</div>
-		<div class="form-group">
-			<label for="opciones">Categorías</label>
+        <div class="form-group">
+			<label for="opciones">Rol</label>
 			<select id="opciones" class="form-control" required>
 				<option value="">Elige una opción</option>
-				<option value="opcion1">Camisas</option>
-				<option value="opcion2">Discos</option>
-				<option value="opcion3">Sacos</option>
+				<option value="opcion1">Usuario</option>
+				<option value="opcion2">Administrador</option>
 			</select>
 		</div>
       </div>
@@ -295,57 +300,33 @@
 </div>
 
 					   <!----edit-modal end--------->
-					   
-					   
-					   
-					   
-					   
+ 
 				   <!----edit-modal start--------->
-		<div class="modal fade" tabindex="-1" id="editarProducto" role="dialog">
+		<div class="modal fade" tabindex="-1" id="editEmployeeModal" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Editar Producto</h5>
+        <h5 class="modal-title">Edit Employees</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-	  <div class="file-upload-container">
-		<div class="form-group">
-		<input type="file" id="file-upload" class="file-upload-input" required>
-		<label for="file-upload" class="file-upload-label">
-			<i class="fas fa-cloud-upload-alt"></i>
-			<span>Selecciona una imagen</span>
-		</label>
-		<div class="file-name"></div>
-	</div>
-	</div>
-	
       <div class="modal-body">
         <div class="form-group">
-		    <label>Nombre</label>
+		    <label>Name</label>
 			<input type="text" class="form-control" required>
 		</div>
 		<div class="form-group">
-		    <label>Descripción</label>
+		    <label>Email</label>
+			<input type="emil" class="form-control" required>
+		</div>
+		<div class="form-group">
+		    <label>Address</label>
+			<textarea class="form-control" required></textarea>
+		</div>
+		<div class="form-group">
+		    <label>Phone</label>
 			<input type="text" class="form-control" required>
-		</div>
-		<div class="form-group">
-		    <label>Precio</label>
-			<input type="number" class="form-control" required>
-		</div>
-		<div class="form-group">
-		    <label>Stock</label>
-			<input type="number" class="form-control" required>
-		</div>
-		<div class="form-group">
-			<label for="opciones">Categorías</label>
-			<select id="opciones" class="form-control" required>
-				<option value="">Elige una opción</option>
-				<option value="opcion1">Camisas</option>
-				<option value="opcion2">Discos</option>
-				<option value="opcion3">Sacos</option>
-			</select>
 		</div>
       </div>
       <div class="modal-footer">
@@ -360,7 +341,7 @@
 					   
 					   
 					 <!----delete-modal start--------->
-		<div class="modal fade" tabindex="-1" id="eliminarProducto" role="dialog">
+		<div class="modal fade" tabindex="-1" id="deleteEmployeeModal" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -429,77 +410,36 @@
 	   });
   </script>
   
-  <script>
-	document.querySelector('.custom-file-label').addEventListener('click', function() {
-		document.querySelector('#file-upload').click();
-	});
-</script>
-
-<!--Script para la carga de imágenes-->
-<script>
-	document.addEventListener('DOMContentLoaded', function() {
-	  const fileInput = document.getElementById('file-upload');
-	  const fileLabel = document.querySelector('.file-upload-label');
-	  const fileName = document.querySelector('.file-name');
-	  const container = document.querySelector('.file-upload-container');
-	
-	  fileInput.addEventListener('change', function(e) {
-		if (this.files && this.files[0]) {
-		  fileName.textContent = this.files[0].name;
-		  container.classList.add('file-selected');
-		} else {
-		  fileName.textContent = '';
-		  container.classList.remove('file-selected');
-		}
-	  });
-	
-	  ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-		fileLabel.addEventListener(eventName, preventDefaults, false);
-		document.body.addEventListener(eventName, preventDefaults, false);
-	  });
-	
-	  function preventDefaults(e) {
-		e.preventDefault();
-		e.stopPropagation();
-	  }
-	
-	  ['dragenter', 'dragover'].forEach(eventName => {
-		fileLabel.addEventListener(eventName, highlight, false);
-	  });
-	
-	  ['dragleave', 'drop'].forEach(eventName => {
-		fileLabel.addEventListener(eventName, unhighlight, false);
-	  });
-	
-	  function highlight() {
-		container.classList.add('file-dragging');
-	  }
-	
-	  function unhighlight() {
-		container.classList.remove('file-dragging');
-	  }
-	
-	  fileLabel.addEventListener('drop', handleDrop, false);
-	
-	  function handleDrop(e) {
-		const dt = e.dataTransfer;
-		const files = dt.files;
-		fileInput.files = files;
-		
-		if (files && files[0]) {
-		  fileName.textContent = files[0].name;
-		  container.classList.add('file-selected');
-		}
-	  }
-	});
-	</script>
-
-<script src="js/barra-busqueda/barra.js"></script>
-
-
-  <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
   
 
+  <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+  <script>
+    function mostrarContrasena(id) {
+        var input = document.getElementById(id);
+        if (input.type === "password") {
+            input.type = "text";
+        } else {
+            input.type = "password";
+        }
+    }
+    </script>
+
+<script>
+    function togglePasswordVisibility() {
+        var passwordField = document.getElementById('password');
+        var eyeIcon = document.getElementById('eye-icon');
+    
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = "password";
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    }
+    </script>
   </body>
   
   </html>
