@@ -165,7 +165,7 @@ def delete_product(id):
             imagen = producto[0]
             if imagen and imagen != "default.jpg":  # Verifica que la imagen no sea una predeterminada
                 # Elimina la imagen del servidor
-                os.remove(os.path.join('/path/to/uploaded/images/', imagen))
+                os.remove(os.path.join('static', 'images', imagen))
 
             # Luego, eliminamos el producto de la base de datos
             cursor.execute("DELETE FROM producto WHERE idProducto = %s", (id,))
