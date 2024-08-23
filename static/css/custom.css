@@ -1051,6 +1051,135 @@ background-color:rgba(0,0,0,0.09);
 		color: #2196f3;
 	  }
 
+	  .file-upload-container-edit {
+		position: relative;
+		width: 100%;
+		max-width: 300px;
+		margin: 20px auto;
+		text-align: center;
+	}
+	
+	.file-upload-input-edit {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+		cursor: pointer;
+		z-index: 2;
+	}
+	
+	.file-upload-label-edit {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		height: 120px;
+		background-color: #f8f9fa;
+		border: 2px dashed #ced4da;
+		border-radius: 8px;
+		cursor: pointer;
+		transition: all 0.3s ease;
+	}
+	
+	.file-upload-label-edit:hover {
+		background-color: #e9ecef;
+		border-color: #adb5bd;
+	}
+	
+	.file-upload-label-edit i {
+		font-size: 36px;
+		color: #6c757d;
+		margin-bottom: 10px;
+		transition: color 0.3s ease;
+	}
+	
+	.file-upload-label-edit span {
+		font-size: 16px;
+		color: #495057;
+		font-weight: 500;
+	}
+	
+	.file-upload-input-edit:focus + .file-upload-label-edit {
+		outline: 2px solid #007bff;
+		outline-offset: 2px;
+	}
+	
+	.file-name-edit {
+		margin-top: 10px;
+		font-size: 14px;
+		color: #6c757d;
+	}
+	
+	/* Estilos para cuando se ha seleccionado un archivo */
+	.file-selected-edit .file-upload-label-edit {
+		background-color: #e8f5e9;
+		border-color: #4caf50;
+	}
+	
+	.file-selected-edit .file-upload-label-edit i {
+		color: #4caf50;
+	}
+	
+	/* Animación cuando se arrastra un archivo sobre el área */
+	@keyframes pulse-edit {
+		0% { transform: scale(1); }
+		50% { transform: scale(1.05); }
+		100% { transform: scale(1); }
+	}
+	
+	.file-dragging-edit .file-upload-label-edit {
+		animation: pulse-edit 1s infinite;
+		background-color: #e3f2fd;
+		border-color: #2196f3;
+	}
+	
+	.file-dragging-edit .file-upload-label-edit i {
+		color: #2196f3;
+	}
+	
+
+
+/* style del mensaje flash */
+.flash-messages {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.flash-message {
+    background-color: #d1ecf1;
+    border: 1px solid #bee5eb;
+    color: #0c5460;
+    padding: 10px;
+    border-radius: 5px;
+    position: relative;
+    width: 380px;
+    margin: 5px;
+    text-align: center;
+}
+
+.flash-message .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.flash-message .close-btn:hover {
+    color: #0056b3;
+}
+.file-upload-container-edit.file-has-image {
+    border-color: blue; /* Cambiar el color del borde del contenedor */
+    background-color: #f0f8ff; /* Cambiar el color de fondo si lo deseas */
+}
+
+
 
 	 
 	  

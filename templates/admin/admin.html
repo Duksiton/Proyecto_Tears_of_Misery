@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+	<title>Dashboard Admin</title>
+	<!-- Bootstrap CSS -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+
+	<!----css3---->
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+
+	<link rel="icon" href="{{ url_for('static', filename='/images/icon-logo.ico') }}">
+
+
+	<!--google fonts -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+
+	<!--google material icon-->
+	<link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+
+</head>
+
+<body>
+
+
+
+	<div class="wrapper">
+
+		<div class="body-overlay"></div>
+
+		<!-------sidebar--design------------>
+
+		<div id="sidebar">
+			<div class="sidebar-header">
+				<h3><img src="{{ url_for('static', filename='/images/icon-logo.ico') }}" class="img-fluid" /><span>Tears
+						of Misery</span></h3>
+			</div>
+			<ul class="list-unstyled component m-0">
+				<li class="active">
+                    <a href="{{ url_for('producto_controller.admin') }}" class="dashboard">
+                        <i class="material-icons">dashboard</i>Productos
+                    </a>
+                </li>
+
+				<li class="dropdown">
+					<a href="{{ url_for('users') }}" class="users">
+						<i class="material-icons">people</i>Usuarios
+					</a>
+				</li>
+				
+
+
+		</div>
+
+
+		<!------top-navbar-start----------->
+
+
+
+
+
+
+	</div>
+	</div>
+
+
+	<div id="content">
+
+		<!------top-navbar-start----------->
+
+
+
+		<div class="top-navbar">
+			<div class="xd-topbar">
+				<div class="row">
+					<div class="col-2 col-md-1 col-lg-1 order-2 order-md-1 align-self-center">
+						<div class="xp-menubar">
+							<span class="material-icons text-white">signal_cellular_alt</span>
+						</div>
+					</div>
+
+					<div class="col-md-5 col-lg-3 order-3 order-md-2">
+						<div class="xp-searchbar">
+							<form>
+								<div class="input-group">
+									<input type="search" class="form-control" placeholder="Buscar">
+									<div class="input-group-append">
+										<button class="btn" type="submit" id="button-addon2">Ir
+										</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+
+
+					<div class="col-10 col-md-6 col-lg-8 order-1 order-md-3">
+						<div class="xp-profilebar text-right">
+							<nav class="navbar p-0">
+								<ul class="nav navbar-nav flex-row ml-auto">
+
+
+
+
+									<li class="dropdown nav-item">
+										<a class="nav-link" href="#" data-toggle="dropdown">
+											<img src="{{ url_for('static', filename='/images/logoicon.png') }}"
+												style="width:40px; border-radius:50%;" />
+											<span class="xp-user-live"></span>
+										</a>
+										<ul class="dropdown-menu small-menu">
+											<li><a href="#">
+													<span class="material-icons">person_outline</span>
+													Perfil
+												</a></li>
+											<li><a href="#">
+													<span class="material-icons">settings</span>
+													Configuración
+												</a></li>
+											<li><a href="#">
+													<span class="material-icons">logout</span>
+													Cerrar Sesión
+												</a></li>
+
+										</ul>
+									</li>
+
+
+								</ul>
+							</nav>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="xp-breadcrumbbar text-center">
+					<!-- Mostrar un único mensaje flash -->
+					<div class="flash-messages">
+						{% with messages = get_flashed_messages(with_categories=true) %}
+						{% if messages %}
+						<div class="flash-message">
+							<span>{{ messages[0][1] }}</span>
+							<button class="close-btn"
+								onclick="this.parentElement.style.display='none';">&times;</button>
+						</div>
+						{% endif %}
+						{% endwith %}
+					</div>
+
+					<h4 class="page-title">Panel</h4>
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item active" aria-curent="page">Panel Administrativo</li>
+					</ol>
+				</div>
+
+
+			</div>
+		</div>
+		<!------top-navbar-end----------->
+
+
+		<!------main-content-start----------->
+
+		<div class="main-content">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="table-wrapper">
+
+						<div class="table-title">
+							<div class="row">
+								<div class="col-sm-6 p-0 flex justify-content-lg-start justify-content-center">
+									<h2 class="ml-lg-2">Administrar productos</h2>
+								</div>
+								<div class="col-sm-6 p-0 flex justify-content-lg-end justify-content-center">
+									<a href="#agregarProducto" class="btn btn-success" data-toggle="modal">
+										<i class="material-icons">&#xE147;</i>
+										<span>Agregar nuevo producto</span>
+									</a>
+									
+									
+								</div>
+							</div>
+						</div>
+
+						<table class="table table-striped table-hover table-with-animation">
+							<thead>
+								<tr>
+									<th>
+									<th>Imagen</th>
+									<th>Nombre</th>
+									<th>Descripción</th>
+									<th>Precio</th>
+									<th>Stock</th>
+									<th>Categoría</th>
+									<th>Talla</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% if productos %}
+									{% for producto in productos %}
+										<tr>
+											<th>
+												
+													
+												</span>
+											</th>
+											<td>
+												<img src="{{ url_for('static', filename='images/' + producto['imagen']) }}"
+													 alt="{{ producto['nombre'] }}" style="width: 50px; height: 50px;">
+											</td>
+											<td>{{ producto['nombre'] }}</td>
+											<td>{{ producto['descripcion'] }}</td>
+											<td>${{ "{:,.0f}".format(producto['precio']).replace(',', '.') }}</td>
+											<td>{{ producto['stock'] }}</td>
+											<td>{{ producto['categoria_nombre'] }}</td>
+											<td>{{ producto['talla'] }}</td>
+											<td>
+												<a href="#editarProducto" class="edit-button"  data-toggle="modal" data-id="{{ producto.idProducto }}">
+													<i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
+												</a>
+												
+												<a href="#eliminarProducto" class="delete" data-toggle="modal" data-id="{{ producto.idProducto }}">
+													<i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
+												</a>
+												
+												
+											</td>
+										</tr>
+									{% endfor %}
+								{% else %}
+									<tr>
+										<td colspan="9">No hay productos disponibles.</td>
+									</tr>
+								{% endif %}
+							</tbody>
+							
+							
+							
+						</table>
+
+
+
+
+						</table>
+
+						<div class="clearfix">
+							<ul class="pagination">
+								<li class="page-item disabled"><a href="#" class="page-link">Previous</a></li>
+								<li class="page-item active"><a href="#" class="page-link">1</a></li>
+								<li class="page-item"><a href="#" class="page-link">2</a></li>
+								<li class="page-item"><a href="#" class="page-link">3</a></li>
+								<li class="page-item"><a href="#" class="page-link">4</a></li>
+								<li class="page-item"><a href="#" class="page-link">5</a></li>
+								<li class="page-item"><a href="#" class="page-link">Next</a></li>
+							</ul>
+						</div>
+
+
+
+
+
+
+
+
+
+					</div>
+				</div>
+
+
+				<!----add-modal start--------->
+				<!-- Modal para Agregar Producto -->
+				<div class="modal fade" id="agregarProducto" tabindex="-1" role="dialog"
+					aria-labelledby="agregarProductoLabel" aria-hidden="true">
+					<div class="modal-dialog" role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+								<h5 class="modal-title" id="agregarProductoLabel">Agregar Producto</h5>
+								<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button>
+							</div>
+							<form id="addProductForm" method="POST" enctype="multipart/form-data" action="{{ url_for('producto_controller.add_product') }}">
+								<div class="modal-body">
+									<div class="file-upload-container">
+										<div class="form-group">
+											<input type="file" id="imagen" name="imagen" class="file-upload-input"
+												required>
+											<label for="imagen" class="file-upload-label">
+												<i class="fas fa-cloud-upload-alt"></i>
+												<span>Selecciona una imagen</span>
+											</label>
+											<div class="file-name"></div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="nombre">Nombre</label>
+										<input type="text" id="nombre" name="nombre" class="form-control" required>
+									</div>
+									<div class="form-group">
+										<label for="descripcion">Descripción</label>
+										<input type="text" id="descripcion" name="descripcion" class="form-control"
+											required>
+									</div>
+									<div class="form-group">
+										<label for="precio">Precio</label>
+										<input type="text" id="precio" name="precio" class="form-control" required>
+									</div>
+									<div class="form-group">
+										<label for="stock">Stock</label>
+										<input type="number" id="stock" name="stock" class="form-control" required>
+									</div>
+									<div class="form-group">
+										<label for="idCat">Categorías</label>
+										<select id="idCat" name="idCat" class="form-control" required>
+											<option value="">Elige una opción</option>
+											<option value="1">Camisas</option>
+											<option value="2">Discos</option>
+											<option value="3">Sacos</option>
+										</select>
+									</div>
+									<div class="form-group">
+										<label for="talla">Tallas</label>
+										<select id="talla" name="talla" class="form-control">
+											<option value="">Elige una opción</option>
+											<option value="S">S</option>
+											<option value="M">M</option>
+											<option value="L">L</option>
+											<option value="XL">XL</option>
+										</select>
+									</div>
+								</div>
+								<div class="modal-footer">
+									<button type="button" class="btn btn-secondary"
+										data-dismiss="modal">Cancelar</button>
+									<button type="submit" class="btn btn-success">Añadir</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+
+
+				<!----edit-modal end--------->
+
+
+
+
+<!----edit-modal start--------->
+<div class="modal fade" id="editarProducto" tabindex="-1" role="dialog" aria-labelledby="editarProductoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editarProductoLabel">Editar Producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="editarProductoForm" method="POST" enctype="multipart/form-data" action="">
+                <input type="hidden" id="productoIdEdit" name="productoId">
+                <div class="modal-body">
+                    <div class="file-upload-container-edit">
+                        <div class="form-group-edit">
+                            <input type="file" id="imagenEdit" name="imagen" class="file-upload-input-edit" data-image="">
+                            <label for="imagenEdit" class="file-upload-label-edit">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Selecciona una imagen</span>
+                            </label>
+                            <div class="file-name-edit"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nombreEdit">Nombre</label>
+                        <input type="text" id="nombreEdit" name="nombre" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descripcionEdit">Descripción</label>
+                        <input type="text" id="descripcionEdit" name="descripcion" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="precioEdit">Precio</label>
+                        <input type="text" id="precioEdit" name="precio" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="stockEdit">Stock</label>
+                        <input type="number" id="stockEdit" name="stock" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idCatEdit">Categorías</label>
+                        <select id="idCatEdit" name="idCat" class="form-control" required>
+                            <option value="">Elige una opción</option>
+                            <option value="1">Camisas</option>
+                            <option value="2">Discos</option>
+                            <option value="3">Sacos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="tallaEdit">Tallas</label>
+                        <select id="tallaEdit" name="talla" class="form-control">
+                            <option value="">Elige una opción</option>
+                            <option value="S">S</option>
+                            <option value="M">M</option>
+                            <option value="L">L</option>
+                            <option value="XL">XL</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+				
+				
+				<!----edit-modal end--------->
+
+
+				<!----delete-modal start--------->
+				<!-- Modal de Eliminación -->
+<div class="modal fade" id="eliminarProducto" tabindex="-1" role="dialog" aria-labelledby="eliminarProductoLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="eliminarProductoLabel">Eliminar producto</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>¿Estás seguro de querer realizar esta acción?</p>
+                <p class="text-warning"><small>Esta acción es irreversible.</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+				<form id="deleteForm" method="post" action="">
+					<button type="submit" class="btn btn-success">Eliminar</button>
+				</form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Configuración del botón de eliminación
+	document.addEventListener('DOMContentLoaded', function () {
+    const deleteButtons = document.querySelectorAll('.delete');
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            const productoId = this.getAttribute('data-id');
+            const deleteForm = document.getElementById('deleteForm');
+            deleteForm.action = `/delete_product/${productoId}`;
+            $('#eliminarProducto').modal('show');
+        });
+    });
+});
+
+</script>
+
+
+				<!----edit-modal end--------->
+
+
+
+
+			</div>
+		</div>
+
+		<!------main-content-end----------->
+
+
+
+		<!----footer-design------------->
+
+
+
+
+
+	</div>
+
+	</div>
+
+
+
+	<!-------complete html----------->
+
+	<!-- Optional JavaScript -->
+
+
+	<script type="text/javascript">
+		$(document).ready(function () {
+			$(".xp-menubar").on('click', function () {
+				$("#sidebar").toggleClass('active');
+				$("#content").toggleClass('active');
+			});
+
+			$('.xp-menubar,.body-overlay').on('click', function () {
+				$("#sidebar,.body-overlay").toggleClass('show-nav');
+			});
+
+		});
+	</script>
+
+	<script>
+		document.querySelector('.custom-file-label').addEventListener('click', function () {
+			document.querySelector('#file-upload').click();
+		});
+	</script>
+
+	<!--Script para la carga de imágenes-->
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			const fileInput = document.getElementById('imagen');
+			const fileLabel = document.querySelector('.file-upload-label');
+			const fileName = document.querySelector('.file-name');
+			const container = document.querySelector('.file-upload-container');
+
+			fileInput.addEventListener('change', function (e) {
+				if (this.files && this.files[0]) {
+					fileName.textContent = this.files[0].name;
+					container.classList.add('file-selected');
+				} else {
+					fileName.textContent = '';
+					container.classList.remove('file-selected');
+				}
+			});
+
+			['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+				fileLabel.addEventListener(eventName, preventDefaults, false);
+				document.body.addEventListener(eventName, preventDefaults, false);
+			});
+
+			function preventDefaults(e) {
+				e.preventDefault();
+				e.stopPropagation();
+			}
+
+			['dragenter', 'dragover'].forEach(eventName => {
+				fileLabel.addEventListener(eventName, highlight, false);
+			});
+
+			['dragleave', 'drop'].forEach(eventName => {
+				fileLabel.addEventListener(eventName, unhighlight, false);
+			});
+
+			function highlight() {
+				container.classList.add('file-dragging');
+			}
+
+			function unhighlight() {
+				container.classList.remove('file-dragging');
+			}
+
+			fileLabel.addEventListener('drop', handleDrop, false);
+
+			function handleDrop(e) {
+				const dt = e.dataTransfer;
+				const files = dt.files;
+				fileInput.files = files;
+
+				if (files && files[0]) {
+					fileName.textContent = files[0].name;
+					container.classList.add('file-selected');
+				}
+			}
+		});
+	</script>
+
+	<!--Script para la carga de imágenes en-->
+
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+		const fileInput = document.getElementById('imagenEdit');
+		const fileLabel = document.querySelector('.file-upload-label-edit');
+		const fileName = document.querySelector('.file-name-edit');
+		const container = document.querySelector('.file-upload-container-edit');
+
+		fileInput.addEventListener('change', function () {
+			if (this.files && this.files[0]) {
+				fileName.textContent = this.files[0].name;
+				container.classList.add('file-selected-edit');
+			} else {
+				fileName.textContent = '';
+				container.classList.remove('file-selected-edit');
+			}
+		});
+
+		['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+			fileLabel.addEventListener(eventName, preventDefaults, false);
+			document.body.addEventListener(eventName, preventDefaults, false);
+		});
+
+		function preventDefaults(e) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+
+		['dragenter', 'dragover'].forEach(eventName => {
+			fileLabel.addEventListener(eventName, highlight, false);
+		});
+
+		['dragleave', 'drop'].forEach(eventName => {
+			fileLabel.addEventListener(eventName, unhighlight, false);
+		});
+
+		function highlight() {
+			container.classList.add('file-dragging-edit');
+		}
+
+		function unhighlight() {
+			container.classList.remove('file-dragging-edit');
+		}
+
+		fileLabel.addEventListener('drop', handleDrop, false);
+
+		function handleDrop(e) {
+			const dt = e.dataTransfer;
+			const files = dt.files;
+			fileInput.files = files;
+
+			if (files && files[0]) {
+				fileName.textContent = files[0].name;
+				container.classList.add('file-selected-edit');
+			}
+		}
+	});
+	</script>
+
+		<!--Script para modal edit update-->
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				const editButtons = document.querySelectorAll('.edit-button');
+		
+				editButtons.forEach(button => {
+					button.addEventListener('click', function () {
+						const productoId = this.getAttribute('data-id');
+						const form = document.getElementById('editarProductoForm');
+						form.action = `/update_product/${productoId}`;
+		
+						fetch(`/producto/${productoId}`)
+							.then(response => response.json())
+							.then(data => {
+								console.log('Datos recibidos del servidor:', data);
+		
+								// Rellenar el formulario
+								document.getElementById('nombreEdit').value = data.nombre || '';
+                    document.getElementById('descripcionEdit').value = data.descripcion || '';
+                    document.getElementById('precioEdit').value = data.precio || '';
+                    document.getElementById('stockEdit').value = data.stock || '';
+                    document.getElementById('idCatEdit').value = data.idCat || '';
+                    document.getElementById('tallaEdit').value = data.talla || '';
+
+                    // Manejo de la imagen
+                    const fileInput = document.getElementById('imagenEdit');
+                    const fileName = document.querySelector('.file-name-edit');
+                    const container = document.querySelector('.file-upload-container-edit');
+                    const imagenActualInput = document.getElementById('imagenActual');
+                    
+                    if (data.imagen) {
+                        fileName.textContent = data.imagen;
+                        container.classList.add('file-selected-edit');
+                        container.classList.add('file-has-image');
+                        imagenActualInput.value = data.imagen; // Guardar el nombre de la imagen actual
+                    } else {
+                        fileName.textContent = '';
+                        container.classList.remove('file-selected-edit');
+                        container.classList.remove('file-has-image');
+                        imagenActualInput.value = '';
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+
+    // Manejo de la carga de imagen
+    document.getElementById('imagenEdit').addEventListener('change', function () {
+        const fileInput = this;
+        const fileName = document.querySelector('.file-name-edit');
+        const container = document.querySelector('.file-upload-container-edit');
+
+        if (fileInput.files && fileInput.files[0]) {
+            fileName.textContent = fileInput.files[0].name;
+            container.classList.add('file-selected-edit');
+            container.classList.add('file-has-image');
+        } else {
+            const imagenActual = document.getElementById('imagenActual').value;
+            fileName.textContent = imagenActual || '';
+            if (imagenActual) {
+                container.classList.add('file-has-image');
+            } else {
+                container.classList.remove('file-selected-edit');
+                container.classList.remove('file-has-image');
+            }
+        }
+    });
+});
+		</script>
+		
+
+	<script src="js/barra-busqueda/barra.js"></script>
+
+
+	<script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	<script src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+
+	<!-- Incluir Popper.js -->
+	<script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+
+	<!-- Incluir Bootstrap JS -->
+	<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+
+
+
+</body>
+
+</html>
