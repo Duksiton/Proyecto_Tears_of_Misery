@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/In.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/perfil.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_producto.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='images/icon-logo.ico') }}">
+    <script src="https://kit.fontawesome.com/eb496ab1a0.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <header>
+        <a href="{{ url_for('index') }}" class="logo">
+            <img src="{{ url_for('static', filename='images/LOGO.png') }}" alt="Tears Of Misery Logo">
+        </a>
+        
+        <div class="group">
+            <ul class="navigation">
+                
+                <li><a href="{{ url_for('index') }}">Inicio</a></li>
+                <li><a href="{{ url_for('productos') }}">Productos</a></li>
+            </ul>
+        </div>
+        
+        <div class="group2">
+            <ul>
+                
+                <li><a href="{{ url_for('logout') }}" class="logout-btn">Cerrar sesión</a></li>
+                
+            </ul>
+            
+        </div>
+        <li><button class="update-btn" id="toggle-update">Actualizar Datos</button></li>
+        <div class="group3">
+            <ul>
+                <li class="submenu">
+                    <img src="{{ url_for('static', filename='images/white-shopping-cart-icon-9.jpg') }}" id="img-carrito" alt="carrito de compra">
+                    <div id="carrito">
+                        <table id="lista-carrito">
+                            <thead>
+                                <tr>
+                                    <th>Imagen</th>
+                                    <th>Nombre</th>
+                                    <th>Precio</th>
+                                    <th>Acción</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="productos">
+    
+                            </tbody>
+                        </table>
+                        <div id="ver-mas-container">
+                            <a href="#" id="toggle-productos">Ver más productos agregados</a>
+                        </div>
+                        <p id="total-carrito">Total: <span id="total-valor">0.00</span></p>
+                        <a href="#" id="comprar-todo" class="btn-1">Comprar Todo</a>
+                        <a href="#" id="vaciar-carrito" class="btn-1">Vaciar Carrito</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </header>
+    <h1>Bienvenido, {{ user.nombre }}</h1>
+    <main class="profile-container">
+        
+        <section class="user-data" id="user-data">
+            <h2>Mis Datos</h2>
+            <p><strong>Nombre:</strong> {{ user.nombre }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Teléfono:</strong> {{ user.telefono }}</p>
+            <p><strong>Dirección:</strong> {{ user.direccion }}</p>
+        </section>
+
+        <section class="update-profile" id="update-profile">
+            <h2>Actualizar Perfil</h2>
+            <form action="{{ url_for('actualizar_perfil') }}" method="post">
+                <label for="nombre">Nombre:</label>
+                <input type="text" id="nombre" name="nombre" value="{{ user.nombre }}" required><br>
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="{{ user.email }}" required><br>
+
+                <label for="direccion">Dirección:</label>
+                <input type="text" id="direccion" name="direccion" value="{{ user.direccion }}" required><br>
+
+                <label for="telefono">Teléfono:</label>
+                <input type="text" id="telefono" name="telefono" value="{{ user.telefono }}" required><br>
+
+                <button type="submit" class="btn-1">Actualizar</button>
+            </form>
+        </section>
+
+        <section class="purchase-history">
+            <h2>Historial de Compras</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Pedido</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pedido in pedidos %}
+                    <tr>
+                        <td>{{ pedido.idPedido }}</td>
+                        <td>{{ pedido.fechaPedido }}</td>
+                        <td>{{ pedido.totalPedido }}</td>
+                        <td>{{ pedido.estado }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <a href="{{ url_for('index') }}" class="logo-footer">
+                <img src="{{ url_for('static', filename='images/LOGO.png') }}" alt="Tears Of Misery Logo">
+            </a>
+            <p>Tears of Misery Death Metal Latinoamericano, Fundación año 2003 Bogotá D.C. Colombia</p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/tearsofmisery" class="fa-brands fa-facebook" target="_blank"></a>
+                <a href="https://www.instagram.com/tearsof.misery/" class="fa fa-instagram" target="_blank"></a>
+                <a href="https://www.youtube.com/channel/UCjcaDSYUyl_VjlU31vPeH6Q" class="fa fa-youtube" target="_blank"></a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <small>&copy; 2023 <b>Tears Of Misery</b> - Todos los Derechos Reservados.</small>
+        </div>
+    </footer>
+
+    <script>
+        document.getElementById('toggle-update').addEventListener('click', function() {
+            var userData = document.getElementById('user-data');
+            var updateForm = document.getElementById('update-profile');
+            if (updateForm.classList.contains('show')) {
+                updateForm.classList.remove('show');
+                userData.classList.remove('show');
+            } else {
+                updateForm.classList.add('show');
+                userData.classList.add('show');
+            }
+        });
+    </script>
+    <script src="{{ url_for('static', filename='js/script_pro.js') }}"></script>
+    
+
+</body>
+
+</html>
