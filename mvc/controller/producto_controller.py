@@ -15,7 +15,7 @@ def admin():
     try:
         cursor = conn.cursor(dictionary=True)
         cursor.execute("""
-            SELECT p.*, c.nombre AS categoria_nombre 
+            SELECT p.*, c.nombre AS categoria 
             FROM producto p 
             JOIN categoria c ON p.idCat = c.idCat
         """)
@@ -87,20 +87,38 @@ def obtener_producto(id):
         producto = cursor.fetchone()
         if producto:
             data = {
-               'imagen': producto[0],        
-                'productoId': producto[6],       
-                'nombre': producto[1],         
-                'descripcion': producto[2],    
-                'precio': producto[4],         
-                'stock': producto[5],          
-                'idCat': producto[6],          
-                'talla': producto[7]           
+                'idProducto': producto[0],        # idProducto
+                'nombre': producto[1],            # nombre
+                'descripcion': producto[2],       # descripcion
+                'precio': producto[4],            # precio
+                'stock': producto[5],             # stock
+                'imagen': producto[6]             # imagen
             }
             return jsonify(data)
         else:
             return jsonify({'error': 'Producto no encontrado'}), 404
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        close_connection(conn)
+
+@producto_controller.route('/producto/<int:id>')
+def get_producto(id):
+    conn = create_connection()
+    if conn is None:
+        return jsonify({"error": "Error de conexión a la base de datos"}), 500
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM producto WHERE idProducto = %s", (id,))
+        producto = cursor.fetchone()
+        if producto:
+            return jsonify(producto)
+        else:
+            return jsonify({"error": "Producto no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
     finally:
         cursor.close()
         close_connection(conn)
@@ -114,38 +132,47 @@ def update_product(id):
 
     try:
         cursor = conn.cursor()
-        filename = request.files.get('imagen')
+        file = request.files.get('imagen')
         nombre = request.form.get('nombre')
         descripcion = request.form.get('descripcion')
         precio = request.form.get('precio')
         stock = request.form.get('stock')
         idCat = request.form.get('idCat')
         talla = request.form.get('talla')
-        
-        if filename and filename.filename:
-            filename = filename.filename
-            cursor.execute("""
-                UPDATE producto SET nombre = %s, descripcion = %s, precio = %s, stock = %s, idCat = %s, talla = %s, imagen = %s
-                WHERE idProducto = %s
-            """, (nombre, descripcion, precio, stock, idCat, talla, filename, id))
+        imagen_actual = request.form.get('imagenActual')
+
+        # Primero, obtén la información actual del producto
+        cursor.execute("SELECT imagen FROM producto WHERE idProducto = %s", (id,))
+        producto_actual = cursor.fetchone()
+        imagen_original = producto_actual[0] if producto_actual else None
+
+        if file and file.filename:
+            # Si se subió una nueva imagen, usa esa
+            filename = file.filename
+        elif imagen_actual:
+            # Si no se subió una nueva imagen pero hay una imagen actual, mantén esa
+            filename = imagen_actual
         else:
-            # Si no se sube una nueva imagen, se debe mantener la imagen actual
-            current_image = request.form.get('imagenActual')
-            cursor.execute("""
-                UPDATE producto SET nombre = %s, descripcion = %s, precio = %s, stock = %s, idCat = %s, talla = %s, imagen = %s
-                WHERE idProducto = %s
-            """, (nombre, descripcion, precio, stock, idCat, talla, current_image, id))
+            # Si no hay nueva imagen ni imagen actual, mantén la original
+            filename = imagen_original
+
+        print(f"Actualizando producto {id}. Imagen: {filename}")  # Log para depuración
+
+        cursor.execute("""
+            UPDATE producto SET nombre = %s, descripcion = %s, precio = %s, stock = %s, idCat = %s, talla = %s, imagen = %s
+            WHERE idProducto = %s
+        """, (nombre, descripcion, precio, stock, idCat, talla, filename, id))
         
         conn.commit()
         flash("Producto actualizado exitosamente")
     except Exception as e:
+        print(f"Error al actualizar el producto: {str(e)}")  # Log para depuración
         flash(f"Error al actualizar el producto: {str(e)}")
     finally:
         cursor.close()
         close_connection(conn)
     
     return redirect(url_for('producto_controller.admin'))
-
 
 @producto_controller.route('/delete_product/<int:id>', methods=['POST'])
 def delete_product(id):
