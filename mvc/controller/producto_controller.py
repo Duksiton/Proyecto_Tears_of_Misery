@@ -1,11 +1,13 @@
+#Importaciones
 from flask import Blueprint, render_template, abort, flash, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 import os
 from mvc.model.db_connection import create_connection, close_connection
 
-
+#Registro del blueprint producto_controller
 producto_controller = Blueprint('producto_controller', __name__)
 
+#Vista de productos
 @producto_controller.route('/admin', methods=['GET'])
 def admin():
     conn = create_connection()
@@ -29,6 +31,7 @@ def admin():
         close_connection(conn)
     return render_template('admin/admin.html', productos=productos)
 
+#Agregar producto
 @producto_controller.route('/add_product', methods=['POST'])
 def add_product():
     if 'imagen' not in request.files:
@@ -74,7 +77,7 @@ def add_product():
     return redirect(url_for('producto_controller.admin'))
 
 
-
+#Obtenemos el producto
 @producto_controller.route('/producto/<int:id>', methods=['GET'])
 def obtener_producto(id):
     conn = create_connection()
@@ -103,6 +106,7 @@ def obtener_producto(id):
         cursor.close()
         close_connection(conn)
 
+#Un get para obtener los productos en modal
 @producto_controller.route('/producto/<int:id>')
 def get_producto(id):
     conn = create_connection()
@@ -123,6 +127,7 @@ def get_producto(id):
         cursor.close()
         close_connection(conn)
 
+#Actualizamos productos
 @producto_controller.route('/update_product/<int:id>', methods=['POST'])
 def update_product(id):
     conn = create_connection()
@@ -141,19 +146,19 @@ def update_product(id):
         talla = request.form.get('talla')
         imagen_actual = request.form.get('imagenActual')
 
-        # Primero, obtén la información actual del producto
+        # Primero, obtenemos la información actual del producto
         cursor.execute("SELECT imagen FROM producto WHERE idProducto = %s", (id,))
         producto_actual = cursor.fetchone()
         imagen_original = producto_actual[0] if producto_actual else None
 
         if file and file.filename:
-            # Si se subió una nueva imagen, usa esa
+            # Si se subió una nueva imagen, se usa esa
             filename = file.filename
         elif imagen_actual:
-            # Si no se subió una nueva imagen pero hay una imagen actual, mantén esa
+            # Si no se subió una nueva imagen pero hay una imagen actual, mantenemos esa
             filename = imagen_actual
         else:
-            # Si no hay nueva imagen ni imagen actual, mantén la original
+            # Si no hay nueva imagen ni imagen actual, mantenemos la original
             filename = imagen_original
 
         print(f"Actualizando producto {id}. Imagen: {filename}")  # Log para depuración
@@ -174,6 +179,7 @@ def update_product(id):
     
     return redirect(url_for('producto_controller.admin'))
 
+#Eliminamos productos
 @producto_controller.route('/delete_product/<int:id>', methods=['POST'])
 def delete_product(id):
     conn = create_connection()

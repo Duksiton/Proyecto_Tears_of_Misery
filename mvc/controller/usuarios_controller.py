@@ -1,8 +1,11 @@
+#Importaciones
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, jsonify
 from mvc.model.db_connection import create_connection, close_connection
 
+#Agregamos el blueprint de usuarios_controller
 usuarios_controller = Blueprint('usuarios_controller', __name__)
 
+#Listamos usuarios para su visualización 
 @usuarios_controller.route('/usuarios', methods=['GET'])
 def listar_usuarios():
     conn = create_connection()
@@ -30,6 +33,7 @@ def listar_usuarios():
     
     return render_template('admin/users.html', usuarios=usuarios)
 
+#Obtenemos productos para organizarlos en listas
 @usuarios_controller.route('/usuarios/<int:id>', methods=['GET'])
 def get_user(id):
     conn = create_connection()
@@ -63,7 +67,7 @@ def get_user(id):
         cursor.close()
         close_connection(conn)
 
-
+#Agregamos usuarios
 @usuarios_controller.route('/usuarios/add', methods=['GET', 'POST'])
 def agregar_usuario():
     if request.method == 'POST':
@@ -97,6 +101,7 @@ def agregar_usuario():
     
     return render_template('admin/add_user.html')
 
+#Actualizamos usuarios
 @usuarios_controller.route('/update_user/<int:id>', methods=['POST'])
 def update_user(id):
     conn = create_connection()
@@ -129,7 +134,7 @@ def update_user(id):
     
     return redirect(url_for('usuarios_controller.listar_usuarios'))
 
-
+#Eliminamos usuarios
 @usuarios_controller.route('/delete_user/<int:id>', methods=['POST'])
 def delete_user(id):
     conn = create_connection()
