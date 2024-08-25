@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', function () {
+    const searchForm = document.getElementById('searchForm');
+    const searchInput = document.getElementById('searchInput');
     const productosTable = document.getElementById('productosTable').getElementsByTagName('tbody')[0];
-    const pagination = document.getElementById('pagination');
-    const itemsPerPage = 10; // Número máximo de productos por página
+    const paginationElement = document.getElementById('pagination');
+
     let productos = [];
     let currentPage = 1;
+    const itemsPerPage = 5;
 
-    // Función para formatear precios
     function formatPrice(price) {
         return new Intl.NumberFormat('es-CO', {
             style: 'currency',
@@ -15,18 +17,13 @@ document.addEventListener('DOMContentLoaded', function () {
         }).format(price);
     }
 
-    // Función para renderizar productos en la tabla
-    function renderProducts(page) {
+    function renderProducts(products) {
         productosTable.innerHTML = ''; // Limpiar tabla
 
-        const start = (page - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const paginatedProducts = productos.slice(start, end);
-
-        paginatedProducts.forEach(product => {
+        products.forEach((product, index) => {
             const row = productosTable.insertRow();
             row.innerHTML = `
-                <td></td>
+                <td>${index + 1}</td>
                 <td><img src="static/images/${product.imagen}" alt="${product.nombre}" style="width: 50px; height: 50px;"></td>
                 <td>${product.nombre}</td>
                 <td>${product.descripcion}</td>
@@ -45,48 +42,30 @@ document.addEventListener('DOMContentLoaded', function () {
             `;
         });
 
-        updatePagination();
         initializeEventListeners();
     }
 
-    // Función para actualizar los botones de paginación
-    function updatePagination() {
-        pagination.innerHTML = ''; // Limpiar paginación
-
-        const pageCount = Math.ceil(productos.length / itemsPerPage);
+    function renderPagination(totalItems, itemsPerPage, currentPage) {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        paginationElement.innerHTML = '';
 
         if (currentPage > 1) {
-            const prevButton = document.createElement('li');
-            prevButton.className = 'page-item';
-            prevButton.innerHTML = `<a href="#" class="page-link">Previous</a>`;
-            prevButton.querySelector('a').addEventListener('click', function () {
-                currentPage--;
-                renderProducts(currentPage);
-            });
-            pagination.appendChild(prevButton);
+            paginationElement.innerHTML += `<li class="page-item"><a href="#" class="page-link" data-page="${currentPage - 1}">Anterior</a></li>`;
+        } else {
+            paginationElement.innerHTML += `<li class="page-item disabled"><a href="#" class="page-link">Anterior</a></li>`;
         }
 
-        for (let i = 1; i <= pageCount; i++) {
-            const pageItem = document.createElement('li');
-            pageItem.className = `page-item ${i === currentPage ? 'active' : ''}`;
-            pageItem.innerHTML = `<a href="#" class="page-link">${i}</a>`;
-            pageItem.querySelector('a').addEventListener('click', function () {
-                currentPage = i;
-                renderProducts(currentPage);
-            });
-            pagination.appendChild(pageItem);
+        for (let i = 1; i <= totalPages; i++) {
+            paginationElement.innerHTML += `<li class="page-item ${i === currentPage ? 'active' : ''}"><a href="#" class="page-link" data-page="${i}">${i}</a></li>`;
         }
 
-        if (currentPage < pageCount) {
-            const nextButton = document.createElement('li');
-            nextButton.className = 'page-item';
-            nextButton.innerHTML = `<a href="#" class="page-link">Next</a>`;
-            nextButton.querySelector('a').addEventListener('click', function () {
-                currentPage++;
-                renderProducts(currentPage);
-            });
-            pagination.appendChild(nextButton);
+        if (currentPage < totalPages) {
+            paginationElement.innerHTML += `<li class="page-item"><a href="#" class="page-link" data-page="${currentPage + 1}">Siguiente</a></li>`;
+        } else {
+            paginationElement.innerHTML += `<li class="page-item disabled"><a href="#" class="page-link">Siguiente</a></li>`;
         }
+
+        initializePaginationEventListeners();
     }
 
     function initializeEventListeners() {
@@ -99,13 +78,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 fetch(`/producto/${productoId}`)
                     .then(response => response.json())
                     .then(data => {
-                        // Rellenar el formulario de edición con los datos del producto
                         document.getElementById('nombreEdit').value = data.nombre || '';
                         document.getElementById('descripcionEdit').value = data.descripcion || '';
                         document.getElementById('precioEdit').value = data.precio || '';
                         document.getElementById('stockEdit').value = data.stock || '';
 
-                        // Manejo de la imagen
                         const fileInput = document.getElementById('imagenEdit');
                         const fileName = document.querySelector('.file-name-edit');
                         const container = document.querySelector('.file-upload-container-edit');
@@ -113,13 +90,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         if (data.imagen) {
                             fileName.textContent = data.imagen;
-                            container.classList.add('file-selected-edit');
-                            container.classList.add('file-has-image');
+                            container.classList.add('file-selected-edit', 'file-has-image');
                             imagenActualInput.value = data.imagen;
                         } else {
                             fileName.textContent = '';
-                            container.classList.remove('file-selected-edit');
-                            container.classList.remove('file-has-image');
+                            container.classList.remove('file-selected-edit', 'file-has-image');
                             imagenActualInput.value = '';
                         }
                     })
@@ -137,15 +112,49 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function loadProducts() {
-        fetch('/api/productos')
-            .then(response => response.json())
-            .then(data => {
-                productos = data;
-                renderProducts(currentPage);
-            })
-            .catch(error => console.error('Error:', error));
+    function initializePaginationEventListeners() {
+        document.querySelectorAll('.page-link').forEach(link => {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                const page = parseInt(this.getAttribute('data-page'));
+                if (!isNaN(page)) {
+                    currentPage = page;
+                    renderCurrentPage();
+                }
+            });
+        });
     }
 
-    loadProducts();
+    function filterProducts(query) {
+        const filteredProducts = productos.filter(product =>
+            product.nombre.toLowerCase().includes(query.toLowerCase()) ||
+            product.descripcion.toLowerCase().includes(query.toLowerCase()) ||
+            (product.talla && product.talla.toLowerCase().includes(query.toLowerCase())) ||
+            product.precio.toString().includes(query) ||
+            product.stock.toString().includes(query) ||
+            (product.categoriaNombre && product.categoriaNombre.toLowerCase().includes(query.toLowerCase()))
+        );
+        renderProducts(filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
+        renderPagination(filteredProducts.length, itemsPerPage, currentPage);
+    }
+
+    function renderCurrentPage() {
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        renderProducts(productos.slice(start, end));
+        renderPagination(productos.length, itemsPerPage, currentPage);
+    }
+
+    searchForm.addEventListener('submit', function (event) {
+        event.preventDefault();
+        filterProducts(searchInput.value);
+    });
+
+    fetch('/api/productos')
+        .then(response => response.json())
+        .then(data => {
+            productos = data;
+            renderCurrentPage();
+        })
+        .catch(error => console.error('Error fetching products:', error));
 });
