@@ -15,24 +15,15 @@ def perfil():
     connection = create_connection()
 
     if request.method == 'POST':
-        if request.form.get('action') == 'update_profile':
-            return actualizar_perfil()
-        elif request.form.get('action') == 'crear_pedido':
-            return crear_pedido()
+        return actualizar_perfil(user)
 
-    # Obtener los pedidos del usuario
     cursor = connection.cursor(dictionary=True)
     cursor.execute("SELECT * FROM pedido WHERE idUsuario = %s", (user['idUsuario'],))
     pedidos = cursor.fetchall()
 
     return render_template('usuario/perfil.html', user=user, pedidos=pedidos)
 
-def actualizar_perfil():
-    # Verifica si el usuario está autenticado
-    user = session.get('user')
-    if not user:
-        return redirect(url_for('login'))
-
+def actualizar_perfil(user):
     # Obtén los datos del formulario
     nombre = request.form.get('nombre')
     email = request.form.get('email')
@@ -40,17 +31,14 @@ def actualizar_perfil():
     telefono = request.form.get('telefono')
     user_id = user['idUsuario']
 
+    connection = create_connection()
     try:
-        # Conecta a la base de datos
-        conn = create_connection()
-        cursor = conn.cursor()
-
-        # Actualiza los datos del usuario
+        cursor = connection.cursor()
         cursor.execute('''UPDATE usuario
                           SET nombre = %s, email = %s, direccion = %s, telefono = %s
                           WHERE idUsuario = %s''',
                        (nombre, email, direccion, telefono, user_id))
-        conn.commit()
+        connection.commit()
 
         # Actualiza la sesión con los nuevos datos
         user['nombre'] = nombre
@@ -60,61 +48,13 @@ def actualizar_perfil():
         session['user'] = user
 
         flash("Perfil actualizado exitosamente.")
-    except Exception as e:
-        # Manejo de errores: imprime el error en el registro
-        print(f'Error al actualizar perfil: {e}')
-        conn.rollback()
-        flash("Error al actualizar perfil. Inténtalo de nuevo.")
+    except Error as e:
+        flash(f"Error al actualizar el perfil: {e}")
+        connection.rollback()
     finally:
-        # Cierra la conexión a la base de datos
-        cursor.close()
-        conn.close()
-
-    # Redirige de nuevo a la página de perfil
-    return redirect(url_for('perfil.perfil'))
-
-def crear_pedido():
-    # Verifica si el usuario está autenticado
-    user = session.get('user')
-    if not user:
-        return jsonify({'error': 'Usuario no autenticado'}), 401
-
-    # Obtén los datos del pedido desde el formulario
-    producto_id = request.form.get('producto_id')
-    cantidad = int(request.form.get('cantidad'))
-    precio_total = float(request.form.get('precio_total'))
-
-    try:
-        # Conecta a la base de datos
-        conn = create_connection()
-        cursor = conn.cursor()
-
-        # Insertar el pedido en la tabla pedido
-        fecha_pedido = datetime.now().strftime("%Y-%m-%d")
-        cursor.execute(
-            'INSERT INTO pedido (fechaPedido, totalPedido, estado, idUsuario) VALUES (%s, %s, %s, %s)',
-            (fecha_pedido, precio_total, 'Completado', user['idUsuario'])
-        )
-        id_pedido = cursor.lastrowid  # Obtener el ID del último pedido insertado
-
-        # Insertar el detalle del pedido
-        cursor.execute(
-            'INSERT INTO detallePedido (cantidad, precio, idProducto, idPedido) VALUES (%s, %s, %s, %s)',
-            (cantidad, precio_total / cantidad, producto_id, id_pedido)
-        )
-
-        # Confirmar los cambios en la base de datos
-        conn.commit()
-        flash("Pedido realizado exitosamente.")
-    except Exception as e:
-        # Manejo de errores: imprime el error en el registro
-        print(f'Error al crear pedido: {e}')
-        conn.rollback()
-        flash("Error al crear pedido. Inténtalo de nuevo.")
-    finally:
-        # Cierra la conexión a la base de datos
-        cursor.close()
-        conn.close()
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
 
     # Redirige de nuevo a la página de perfil
     return redirect(url_for('perfil.perfil'))
