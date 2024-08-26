@@ -69,40 +69,53 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function initializeEventListeners() {
-        document.querySelectorAll('.edit-button').forEach(button => {
+        // Edit button event listeners
+        const editButtons = document.querySelectorAll('.edit-button');
+        editButtons.forEach(button => {
             button.addEventListener('click', function () {
                 const productoId = this.getAttribute('data-id');
                 const form = document.getElementById('editarProductoForm');
                 form.action = `/update_product/${productoId}`;
 
-                fetch(`/producto/${productoId}`)
+                fetch(`/producto/data/${productoId}`) // Cambiado aquí
                     .then(response => response.json())
                     .then(data => {
+                        console.log('Datos recibidos del servidor:', data);
+                        console.log('Nombre de la imagen:', data.imagen);
+
+                        // Rellenar el formulario
                         document.getElementById('nombreEdit').value = data.nombre || '';
                         document.getElementById('descripcionEdit').value = data.descripcion || '';
                         document.getElementById('precioEdit').value = data.precio || '';
                         document.getElementById('stockEdit').value = data.stock || '';
 
+                        // Manejo de la imagen
                         const fileInput = document.getElementById('imagenEdit');
                         const fileName = document.querySelector('.file-name-edit');
                         const container = document.querySelector('.file-upload-container-edit');
                         const imagenActualInput = document.getElementById('imagenActual');
 
                         if (data.imagen) {
+                            console.log('Asignando nombre de imagen:', data.imagen);
                             fileName.textContent = data.imagen;
                             container.classList.add('file-selected-edit', 'file-has-image');
-                            imagenActualInput.value = data.imagen;
+                            imagenActualInput.value = data.imagen; // Guardar el nombre de la imagen actual
                         } else {
+                            console.log('No hay imagen');
                             fileName.textContent = '';
                             container.classList.remove('file-selected-edit', 'file-has-image');
                             imagenActualInput.value = '';
                         }
+                        console.log('Estado final de fileName:', fileName.textContent);
+                        console.log('Estado final de imagenActualInput:', imagenActualInput.value);
                     })
                     .catch(error => console.error('Error:', error));
             });
         });
 
-        document.querySelectorAll('.delete-button').forEach(button => {
+        // Delete button event listeners
+        const deleteButtons = document.querySelectorAll('.delete-button');
+        deleteButtons.forEach(button => {
             button.addEventListener('click', function () {
                 const productoId = this.getAttribute('data-id');
                 const deleteForm = document.getElementById('deleteForm');
@@ -144,6 +157,29 @@ document.addEventListener('DOMContentLoaded', function () {
         renderProducts(productos.slice(start, end));
         renderPagination(productos.length, itemsPerPage, currentPage);
     }
+
+    // Manejo de la carga de imagen
+    document.getElementById('imagenEdit').addEventListener('change', function () {
+        const fileInput = this;
+        const fileName = document.querySelector('.file-name-edit');
+        const container = document.querySelector('.file-upload-container-edit');
+        const imagenActualInput = document.getElementById('imagenActual');
+
+        if (fileInput.files && fileInput.files[0]) {
+            fileName.textContent = fileInput.files[0].name;
+            container.classList.add('file-selected-edit', 'file-has-image');
+            imagenActualInput.value = ''; // Limpiar el valor de la imagen actual
+        } else {
+            const imagenActual = imagenActualInput.value;
+            fileName.textContent = imagenActual || '';
+            if (imagenActual) {
+                container.classList.add('file-has-image');
+            } else {
+                container.classList.remove('file-selected-edit', 'file-has-image');
+            }
+        }
+        console.log('Cambio en la imagen. Nuevo nombre:', fileName.textContent);
+    });
 
     searchForm.addEventListener('submit', function (event) {
         event.preventDefault();

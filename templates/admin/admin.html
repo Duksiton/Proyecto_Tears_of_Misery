@@ -118,10 +118,7 @@
 										</a>
 										<ul class="dropdown-menu small-menu">
 											
-											<li><a href="#">
-													<span class="material-icons">logout</span>
-													Cerrar Sesión
-												</a></li>
+												<li><a href="{{ url_for('logout.logout') }}" class="logout-btn">Cerrar sesión</a></li>
 
 										</ul>
 									</li>
@@ -645,31 +642,31 @@
 	<script>
 		document.addEventListener('DOMContentLoaded', function () {
 			const editButtons = document.querySelectorAll('.edit-button');
-
+	
 			editButtons.forEach(button => {
 				button.addEventListener('click', function () {
 					const productoId = this.getAttribute('data-id');
 					const form = document.getElementById('editarProductoForm');
 					form.action = `/update_product/${productoId}`;
-
-					fetch(`/producto/${productoId}`)
+	
+					fetch(`/producto/data/${productoId}`) // Cambiado aquí
 						.then(response => response.json())
 						.then(data => {
 							console.log('Datos recibidos del servidor:', data);
 							console.log('Nombre de la imagen:', data.imagen);
-
+	
 							// Rellenar el formulario
 							document.getElementById('nombreEdit').value = data.nombre || '';
 							document.getElementById('descripcionEdit').value = data.descripcion || '';
 							document.getElementById('precioEdit').value = data.precio || '';
 							document.getElementById('stockEdit').value = data.stock || '';
-
+	
 							// Manejo de la imagen
 							const fileInput = document.getElementById('imagenEdit');
 							const fileName = document.querySelector('.file-name-edit');
 							const container = document.querySelector('.file-upload-container-edit');
 							const imagenActualInput = document.getElementById('imagenActual');
-
+	
 							if (data.imagen) {
 								console.log('Asignando nombre de imagen:', data.imagen);
 								fileName.textContent = data.imagen;
@@ -689,14 +686,14 @@
 						.catch(error => console.error('Error:', error));
 				});
 			});
-
+	
 			// Manejo de la carga de imagen
 			document.getElementById('imagenEdit').addEventListener('change', function () {
 				const fileInput = this;
 				const fileName = document.querySelector('.file-name-edit');
 				const container = document.querySelector('.file-upload-container-edit');
 				const imagenActualInput = document.getElementById('imagenActual');
-
+	
 				if (fileInput.files && fileInput.files[0]) {
 					fileName.textContent = fileInput.files[0].name;
 					container.classList.add('file-selected-edit');
@@ -716,7 +713,7 @@
 			});
 		});
 	</script>
-
+	
 
 <script src="{{ url_for('static', filename='js/barra-busqueda/barra.js') }}"></script>
 

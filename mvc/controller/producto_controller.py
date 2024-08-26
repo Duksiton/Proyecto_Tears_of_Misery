@@ -1,13 +1,13 @@
-#Importaciones
-from flask import Blueprint, render_template, abort, flash, request, redirect, url_for, jsonify
+# Importaciones
+from flask import Blueprint, render_template, abort, flash, request, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 from mvc.model.db_connection import create_connection, close_connection
 
-#Registro del blueprint producto_controller
+# Registro del blueprint producto_controller
 producto_controller = Blueprint('producto_controller', __name__)
 
-#Vista de productos
+# Vista de productos
 @producto_controller.route('/admin', methods=['GET'])
 def admin():
     conn = create_connection()
@@ -31,7 +31,7 @@ def admin():
         close_connection(conn)
     return render_template('admin/admin.html', productos=productos)
 
-#Agregar producto
+# Agregar producto
 @producto_controller.route('/add_product', methods=['POST'])
 def add_product():
     if 'imagen' not in request.files:
@@ -76,58 +76,63 @@ def add_product():
     
     return redirect(url_for('producto_controller.admin'))
 
-
-#Obtenemos el producto
+# Obtener un producto y renderizar la plantilla
 @producto_controller.route('/producto/<int:id>', methods=['GET'])
-def obtener_producto(id):
+def producto(id):
     conn = create_connection()
     if conn is None:
-        return jsonify({'error': 'Error de conexión a la base de datos'}), 500
-
-    try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM producto WHERE idProducto = %s", (id,))
-        producto = cursor.fetchone()
-        if producto:
-            data = {
-                'idProducto': producto[0],        # idProducto
-                'nombre': producto[1],            # nombre
-                'descripcion': producto[2],       # descripcion
-                'precio': producto[4],            # precio
-                'stock': producto[5],             # stock
-                'imagen': producto[6]             # imagen
-            }
-            return jsonify(data)
-        else:
-            return jsonify({'error': 'Producto no encontrado'}), 404
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-    finally:
-        cursor.close()
-        close_connection(conn)
-
-#Un get para obtener los productos en modal
-@producto_controller.route('/producto/<int:id>')
-def get_producto(id):
-    conn = create_connection()
-    if conn is None:
-        return jsonify({"error": "Error de conexión a la base de datos"}), 500
-
+        flash("Error de conexión a la base de datos")
+        abort(500, description="Error de conexión a la base de datos")
+    
     try:
         cursor = conn.cursor(dictionary=True)
         cursor.execute("SELECT * FROM producto WHERE idProducto = %s", (id,))
         producto = cursor.fetchone()
+        
         if producto:
-            return jsonify(producto)
+            # Formatear el precio sin decimales
+            producto['precio'] = f"{int(producto['precio']):,.0f}".replace(',', 'X').replace('.', ',').replace('X', '.')
         else:
-            return jsonify({"error": "Producto no encontrado"}), 404
+            flash("Producto no encontrado")
+            return redirect(url_for('productos'))  # Redirigir si no se encuentra el producto
+        
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        flash(f"Error al obtener el producto: {str(e)}")
+        producto = None
     finally:
         cursor.close()
         close_connection(conn)
+    
+    return render_template('usuario/producto.html', producto=producto)  # Asegúrate de que el nombre de la plantilla sea correcto
 
-#Actualizamos productos
+# Controlador del catálogo
+@producto_controller.route('/catalogo', methods=['GET'])
+def catalogo():
+    conn = create_connection()
+    if conn is None:
+        flash("Error de conexión a la base de datos")
+        abort(500, description="Error de conexión a la base de datos")
+    
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM producto")
+        productos = cursor.fetchall()
+
+        # Formatear el precio de cada producto
+        for producto in productos:
+            # Formatear el precio sin decimales
+            producto['precio'] = f"{int(producto['precio']):,.0f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+        
+    except Exception as e:
+        flash(f"Error al obtener productos: {str(e)}")
+        productos = []
+    finally:
+        cursor.close()
+        close_connection(conn)
+    
+    return render_template('usuario/catalogo.html', productos=productos)
+
+# Actualizamos productos
 @producto_controller.route('/update_product/<int:id>', methods=['POST'])
 def update_product(id):
     conn = create_connection()
@@ -179,7 +184,7 @@ def update_product(id):
     
     return redirect(url_for('producto_controller.admin'))
 
-#Eliminamos productos
+# Eliminamos productos
 @producto_controller.route('/delete_product/<int:id>', methods=['POST'])
 def delete_product(id):
     conn = create_connection()
@@ -214,3 +219,30 @@ def delete_product(id):
         close_connection(conn)
 
     return redirect(url_for('producto_controller.admin'))
+
+
+@producto_controller.route('/productos', methods=['GET'])
+def mostrar_productos_invitado():
+    conn = create_connection()
+    if conn is None:
+        flash("Error de conexión a la base de datos")
+        abort(500, description="Error de conexión a la base de datos")
+    
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM producto")
+        productos = cursor.fetchall()
+
+        # Formatear el precio de cada producto
+        for producto in productos:
+            producto['precio'] = f"{int(producto['precio']):,.0f}".replace(',', 'X').replace('.', ',').replace('X', '.')
+        
+    except Exception as e:
+        flash(f"Error al obtener productos: {str(e)}")
+        productos = []
+    finally:
+        cursor.close()
+        close_connection(conn)
+    
+    return render_template('productos.html', productos=productos)
+
