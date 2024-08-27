@@ -106,57 +106,55 @@ def users():
         flash("Error al conectar a la base de datos")
     return render_template('admin/users.html')
 
-@app.route('/api/crear-pedido', methods=['POST'])
-def crear_pedido():
-    data = request.get_json()
-    user = session.get('user')
-    if not user:
-        return jsonify({'error': 'Usuario no autenticado'}), 401
-
-    try:
-        conn = create_connection()
-        cursor = conn.cursor()
-
-        fecha_pedido = datetime.now().strftime("%Y-%m-%d")
-        cursor.execute(
-            'INSERT INTO pedido (fechaPedido, totalPedido, estado, idUsuario) VALUES (%s, %s, %s, %s)',
-            (fecha_pedido, data['total'], 'Completado', user['idUsuario'])
-        )
-        id_pedido = cursor.lastrowid
-
-        for producto in data['productos']:
-            cursor.execute(
-                'INSERT INTO detallePedido (cantidad, precio, idProducto, idPedido) VALUES (%s, %s, %s, %s)',
-                (producto['cantidad'], producto['precio'], producto['id'], id_pedido)
-            )
-
-        conn.commit()
-        return jsonify({"message": "Pedido creado con éxito"}), 201
-    except Exception as e:
-        print(f'Error al crear pedido: {e}')
-        conn.rollback()
-        return jsonify({"message": "Error al crear el pedido"}), 400
-    finally:
-        cursor.close()
-        conn.close()
 
 
-#La api de productos para generar el cuadro de búsqueda en productos
 @app.route('/api/productos', methods=['GET'])
 def get_productos():
     conn = create_connection()
     cursor = conn.cursor(dictionary=True)
-    # Consulta SQL actualizada para incluir el nombre de la categoría
-    query = """
-    SELECT p.*, c.nombre AS categoriaNombre
-    FROM producto p
-    LEFT JOIN categoria c ON p.idCat = c.idCat
-    """
-    cursor.execute(query)
-    productos = cursor.fetchall()
-    cursor.close()
-    conn.close()
+
+    try:
+        query = """
+        SELECT p.*, c.nombre AS categoriaNombre
+        FROM producto p
+        LEFT JOIN categoria c ON p.idCat = c.idCat
+        """
+        cursor.execute(query)
+        productos = cursor.fetchall()
+        print('Productos obtenidos:', productos)  # Log de los productos obtenidos
+    except Exception as e:
+        print('Error al obtener productos:', e)
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+    
     return jsonify(productos)
+
+@app.route('/producto/data/<int:id>', methods=['GET'])
+def obtener_producto(id):
+    print(f'Request para obtener producto con ID: {id}')  # Log de solicitud
+    conn = create_connection()
+    if conn is None:
+        print('Error de conexión a la base de datos')  # Log de error
+        return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT p.*, c.nombre AS categoriaNombre FROM producto p LEFT JOIN categoria c ON p.idCat = c.idCat WHERE idProducto = %s", (id,))
+        producto = cursor.fetchone()
+        if producto:
+            print('Producto encontrado:', producto)  # Log de producto encontrado
+            return jsonify(producto)
+        else:
+            print('Producto no encontrado')  # Log de producto no encontrado
+            return jsonify({'error': 'Producto no encontrado'}), 404
+    except Exception as e:
+        print('Error al obtener datos del producto:', e)  # Log para error
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        close_connection(conn)
 
 
 if __name__ == '__main__':

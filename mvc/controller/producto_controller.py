@@ -1,5 +1,5 @@
 # Importaciones
-from flask import Blueprint, render_template, abort, flash, request, redirect, url_for
+from flask import Blueprint, render_template, abort, flash, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 import os
 from mvc.model.db_connection import create_connection, close_connection
@@ -131,6 +131,58 @@ def catalogo():
         close_connection(conn)
     
     return render_template('usuario/catalogo.html', productos=productos)
+
+
+@producto_controller.route('/producto/<int:id>', methods=['GET'])
+def obtener_producto(id):
+    conn = create_connection()
+    if conn is None:
+        return jsonify({'error': 'Error de conexión a la base de datos'}), 500
+
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM producto WHERE idProducto = %s", (id,))
+        producto = cursor.fetchone()
+        if producto:
+            data = {
+                'idProducto': producto[0],
+                'nombre': producto[1],
+                'descripcion': producto[2],
+                'precio': producto[4],
+                'stock': producto[5],
+                'imagen': producto[6]
+            }
+            return jsonify(data)
+        else:
+            return jsonify({'error': 'Producto no encontrado'}), 404
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        close_connection(conn)
+
+
+@producto_controller.route('/producto/<int:id>')
+def get_producto(id):
+    conn = create_connection()
+    if conn is None:
+        return jsonify({"error": "Error de conexión a la base de datos"}), 500
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM producto WHERE idProducto = %s", (id,))
+        producto = cursor.fetchone()
+        if producto:
+            return jsonify(producto)
+        else:
+            return jsonify({"error": "Producto no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        cursor.close()
+        close_connection(conn)
+
+
 
 # Actualizamos productos
 @producto_controller.route('/update_product/<int:id>', methods=['POST'])

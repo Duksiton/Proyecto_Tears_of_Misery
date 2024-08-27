@@ -77,12 +77,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 const form = document.getElementById('editarProductoForm');
                 form.action = `/update_product/${productoId}`;
 
-                fetch(`/producto/data/${productoId}`) // Cambiado aquí
-                    .then(response => response.json())
+                console.log('Fetching product data from:', `/producto/${productoId}`);
+
+                fetch(`/producto/${productoId}`) // Cambiado aquí
+                    .then(response => {
+                        console.log('Response status:', response.status);
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
                         console.log('Datos recibidos del servidor:', data);
-                        console.log('Nombre de la imagen:', data.imagen);
-
                         // Rellenar el formulario
                         document.getElementById('nombreEdit').value = data.nombre || '';
                         document.getElementById('descripcionEdit').value = data.descripcion || '';
@@ -106,10 +112,10 @@ document.addEventListener('DOMContentLoaded', function () {
                             container.classList.remove('file-selected-edit', 'file-has-image');
                             imagenActualInput.value = '';
                         }
-                        console.log('Estado final de fileName:', fileName.textContent);
-                        console.log('Estado final de imagenActualInput:', imagenActualInput.value);
                     })
-                    .catch(error => console.error('Error:', error));
+                    .catch(error => {
+                        console.error('Error al obtener datos del producto:', error);
+                    });
             });
         });
 
@@ -186,11 +192,46 @@ document.addEventListener('DOMContentLoaded', function () {
         filterProducts(searchInput.value);
     });
 
-    fetch('/api/productos')
-        .then(response => response.json())
-        .then(data => {
-            productos = data;
-            renderCurrentPage();
-        })
-        .catch(error => console.error('Error fetching products:', error));
+    fetch(`/producto/data/${productoId}`)
+    .then(response => {
+        console.log('Fetching product data from:', `/producto/data/${productoId}`);
+        console.log('Response status:', response.status);
+        if (!response.ok) {
+            throw new Error('Network response was not ok: ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Datos recibidos del servidor:', data);
+        
+        // Rellenar el formulario con los datos recibidos
+        document.getElementById('nombreEdit').value = data.nombre || '';
+        document.getElementById('descripcionEdit').value = data.descripcion || '';
+        document.getElementById('precioEdit').value = data.precio || '';
+        document.getElementById('stockEdit').value = data.stock || '';
+        document.getElementById('tallaEdit').value = data.talla || ''; // Asegúrate de que este campo existe en el formulario
+
+        // Manejo de la imagen
+        const fileName = document.querySelector('.file-name-edit');
+        const container = document.querySelector('.file-upload-container-edit');
+        const imagenActualInput = document.getElementById('imagenActual');
+
+        if (data.imagen) {
+            console.log('Asignando nombre de imagen:', data.imagen);
+            fileName.textContent = data.imagen; // Mostrar nombre de la imagen
+            container.classList.add('file-selected-edit', 'file-has-image');
+            imagenActualInput.value = data.imagen; // Guardar el nombre de la imagen actual
+        } else {
+            console.log('No hay imagen, reiniciando campos de imagen.');
+            fileName.textContent = '';
+            container.classList.remove('file-selected-edit', 'file-has-image');
+            imagenActualInput.value = ''; // Limpiar el valor de la imagen actual
+        }
+        
+        console.log('Estado final de fileName:', fileName.textContent);
+        console.log('Estado final de imagenActualInput:', imagenActualInput.value);
+    })
+    .catch(error => console.error('Error al obtener datos del producto:', error));
+
+
 });
