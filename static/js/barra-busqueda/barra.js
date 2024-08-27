@@ -144,25 +144,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function filterProducts(query) {
-        const filteredProducts = productos.filter(product =>
-            product.nombre.toLowerCase().includes(query.toLowerCase()) ||
-            product.descripcion.toLowerCase().includes(query.toLowerCase()) ||
-            (product.talla && product.talla.toLowerCase().includes(query.toLowerCase())) ||
-            product.precio.toString().includes(query) ||
-            product.stock.toString().includes(query) ||
-            (product.categoriaNombre && product.categoriaNombre.toLowerCase().includes(query.toLowerCase()))
-        );
-        renderProducts(filteredProducts.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage));
-        renderPagination(filteredProducts.length, itemsPerPage, currentPage);
-    }
-
-    function renderCurrentPage() {
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        renderProducts(productos.slice(start, end));
-        renderPagination(productos.length, itemsPerPage, currentPage);
-    }
+    
 
     // Manejo de la carga de imagen
     document.getElementById('imagenEdit').addEventListener('change', function () {
