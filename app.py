@@ -1,5 +1,6 @@
 # Importaciones
-from flask import Flask, render_template, flash, jsonify, request, redirect, url_for
+from flask import Flask, render_template, flash, jsonify, request, redirect, url_for, session
+from datetime import datetime
 from mvc.model.db_connection import create_connection, close_connection
 from mvc.controller.producto_controller import producto_controller
 from mvc.controller.usuarios_controller import usuarios_controller
@@ -7,6 +8,7 @@ from mvc.controller.login_controller import login_controller
 from mvc.controller.registro_controller import registro_controller
 from mvc.controller.perfil_controller import perfil_controller
 from mvc.controller.logout_controller import logout_controller
+from mvc.controller.pedidos_controller import pedidos_controller
 
 app = Flask(__name__)
 app.secret_key = 'tearsofmiseryconexion'
@@ -18,6 +20,7 @@ app.register_blueprint(login_controller)
 app.register_blueprint(registro_controller)
 app.register_blueprint(perfil_controller)
 app.register_blueprint(logout_controller)
+app.register_blueprint(pedidos_controller)
 
 @app.route('/')
 def index():
@@ -106,7 +109,39 @@ def users():
         flash("Error al conectar a la base de datos")
     return render_template('admin/users.html')
 
+@app.route('/api/crear-pedido', methods=['POST'])
+def crear_pedido():
+    data = request.get_json()
+    user = session.get('user')
+    if not user:
+        return jsonify({'error': 'Usuario no autenticado'}), 401
 
+    try:
+        conn = create_connection()
+        cursor = conn.cursor()
+
+        fecha_pedido = datetime.now().strftime("%Y-%m-%d")
+        cursor.execute(
+            'INSERT INTO pedido (fechaPedido, totalPedido, estado, idUsuario) VALUES (%s, %s, %s, %s)',
+            (fecha_pedido, data['total'], 'Completado', user['idUsuario'])
+        )
+        id_pedido = cursor.lastrowid
+
+        for producto in data['productos']:
+            cursor.execute(
+                'INSERT INTO detallePedido (cantidad, precio, idProducto, idPedido) VALUES (%s, %s, %s, %s)',
+                (producto['cantidad'], producto['precio'], producto['id'], id_pedido)
+            )
+
+        conn.commit()
+        return jsonify({"message": "Pedido creado con éxito"}), 201
+    except Exception as e:
+        print(f'Error al crear pedido: {e}')
+        conn.rollback()
+        return jsonify({"message": "Error al crear el pedido"}), 400
+    finally:
+        cursor.close()
+        conn.close()
 
 @app.route('/api/productos', methods=['GET'])
 def get_productos():

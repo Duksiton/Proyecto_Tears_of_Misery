@@ -61,3 +61,34 @@ def actualizar_perfil(user):
 
 # Asegúrate de registrar este controlador en tu aplicación Flask
 # app.register_blueprint(perfil_controller)
+
+
+@perfil_controller.route('/api/realizar_pedido', methods=['POST'])
+def realizar_pedido():
+    data = request.json
+    try:
+        conn = create_connection()
+        cursor = conn.cursor()
+
+        # Inserta el pedido
+        cursor.execute("""
+            INSERT INTO pedido (fechaPedido, totalPedido, estado, idUsuario)
+            VALUES (CURDATE(), %s, 'pendiente', %s)
+        """, (data['precio_total'], data['user_id']))
+        id_pedido = cursor.lastrowid  # Obtener el ID del último pedido insertado
+
+        # Inserta los productos del pedido
+        for producto in data['productos']:
+            cursor.execute("""
+                INSERT INTO pedido_producto (idPedido, idProducto, cantidad)
+                VALUES (%s, %s, %s)
+            """, (id_pedido, producto['idProducto'], producto['cantidad']))
+
+        conn.commit()
+        return jsonify({"status": "success"}), 201
+    except Exception as e:
+        print("Error al insertar en la base de datos:", e)
+        return jsonify({"status": "error", "message": str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
