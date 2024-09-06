@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from mvc.model.db_connection import create_connection, close_connection
 from mysql.connector import Error
+import bcrypt  # Importar bcrypt
 
 registro_controller = Blueprint('registro_controller', __name__)
 
@@ -9,14 +10,19 @@ def registro():
     if request.method == 'POST':
         nombre = request.form['nombre']
         email = request.form['email']
-        contrasena = request.form['contrasena']
+        contrasena = request.form['contrasena'].encode('utf-8')  # Convertir a bytes
+        nombreRol = 'Usuario'  # Asignar un rol predeterminado, como 'Usuario'
+
+        # Encriptar la contraseña
+        hashed_password = bcrypt.hashpw(contrasena, bcrypt.gensalt())
+
         connection = None
         try:
             connection = create_connection()
             cursor = connection.cursor()
             cursor.execute(
-                "INSERT INTO usuario (nombre, email, contraseña) VALUES (%s, %s, %s)",
-                (nombre, email, contrasena)
+                "INSERT INTO usuario (nombre, email, contraseña, direccion, telefono, nombreRol) VALUES (%s, %s, %s, %s, %s, %s)",
+                (nombre, email, hashed_password.decode('utf-8'), '', '', nombreRol)  # Almacenar la contraseña encriptada
             )
             connection.commit()
             flash("Usuario registrado con éxito. Por favor, inicia sesión.")  # Mensaje de éxito

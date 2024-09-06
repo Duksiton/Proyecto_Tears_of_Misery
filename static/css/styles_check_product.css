@@ -194,43 +194,74 @@ header {
     }
 }
 
+/* Fondo opacado cuando el carrito está abierto */
+#overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    z-index: 9;
+}
+
+
+
+/* Carrito vertical con animación */
 #carrito {
     display: none;
-    position: absolute;
-    top: 100%;
+    position: fixed;
+    top: 0;
     right: 0;
     background: #fff;
     border-radius: 8px;
-    border: 2px solid transparent; /* Inicialmente sin borde */
+    border: 2px solid transparent; 
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    padding: 35px; /* Aumenta el relleno para hacerlo más grande */
-    width: 520px; /* Aumenta el ancho del carrito */
-    max-height: 400px;
+    padding: 35px;
+    width: 500px; /* Ancho del carrito */
+    height: 100%; /* Ocupa toda la altura de la pantalla */
     overflow-y: auto;
     z-index: 10;
-    animation: slideIn 0.3s forwards, fireAnimation 2s linear infinite; /* Combina la animación de deslizamiento con fuego */
+    animation: slideIn 0.5s forwards;
 }
 
-#add-to-cart {
-    background-color: #dc3545; /* Color de fondo del botón */
-    color: white; /* Color del texto */
-    border: none; /* Sin borde */
-    padding: 15px 30px; /* Aumentar el relleno superior/inferior y los lados */
-    font-size: 18px; /* Aumentar el tamaño de la fuente */
-    border-radius: 8px; /* Bordes redondeados */
-    cursor: pointer; /* Cambiar el cursor al pasar el ratón */
-    transition: background-color 0.3s; /* Transición suave para el cambio de color */
+/* Botón de cerrar ("X") */
+#carrito .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    color: #333;
 }
-
-#add-to-cart:hover {
-    background-color: #ff0000; /* Color de fondo cuando el ratón está sobre el botón */
-}
-
 
 #carrito.closing {
-    animation: slideOut 0.3s forwards;
+    animation: slideOut 0.5s forwards;
 }
 
+/* Animación de apertura y cierre */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+/* Estilos de la tabla de productos en el carrito */
 #lista-carrito {
     width: 100%;
     border-collapse: collapse;
@@ -248,12 +279,14 @@ header {
     font-weight: bold;
 }
 
+/* Botones dentro del carrito */
 #vaciar-carrito {
     display: block;
     margin-top: 10px;
     text-align: center;
-    background: #c00000;
-    color: #fff;
+    background: #ffffff;
+    color: #000000;
+    border: 1px solid #000000;
     padding: 10px;
     text-decoration: none;
     border-radius: 4px;
@@ -276,20 +309,23 @@ header {
     display: block;
     margin-top: 10px;
     text-align: center;
-    background: #0c6834;
-    color: #fff;
+    background: #e4a700;
+    color: #000000;
     padding: 10px;
     text-decoration: none;
     border-radius: 4px;
     font-size: 1em;
     font-weight: bold;
+    border: 1px solid #000000; /* Agrega un borde negro */
     transition: background 0.3s;
 }
 
+
 #comprar-todo:hover {
-    background: #0ba74e;
+    background: #ffbb00;
 }
 
+/* Enlaces adicionales */
 #ver-mas-container {
     text-align: center;
     margin-top: 10px;
@@ -307,7 +343,7 @@ header {
     text-decoration: underline;
 }
 
-/* Ejemplo de estilo opcional */
+/* Validación opcional */
 input:invalid {
     border-color: #dc3545;
 }

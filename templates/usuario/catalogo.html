@@ -26,16 +26,17 @@
         <div class="group2">
             <div class="user-profile" style="position: relative; display: inline-block;">
                 <i class="fas fa-user-circle" style="font-size: 40px; color: white; cursor: pointer;" onclick="toggleMenu()"></i>
-                <div class="dropdown-menu" id="userMenu" style="display: none; position: absolute; background-color: #333; color: white; border-radius: 5px; padding: 10px; z-index: 1;">
-                    <ul style="list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column;">
-                        <li style="padding: 8px 12px;">
-                            <a href="{{ url_for('perfil.perfil') }}" class="logout-btn" style="color: white; text-decoration: none;">Configuración</a>
+                <div class="dropdown-menu" id="userMenu" style="display: none; position: absolute; background-color: #333; color: white; border-radius: 5px; padding: 10px; z-index: 1; width: 200px;">
+                    <ul style="list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; width: 100%;">
+                        <li style="padding: 8px 12px; width: 100%; box-sizing: border-box;">
+                            <a href="{{ url_for('perfil.perfil') }}" class="logout-btn" style="color: white; text-decoration: none;   ">Perfil</a>
                         </li>
-                        <li style="padding: 8px 12px;">
-                            <a href="{{ url_for('logout.logout') }}" class="logout-btn" style="color: white; text-decoration: none;">Cerrar sesión</a>
+                        <li style="padding: 8px 12px; width: 100%; box-sizing: border-box;">
+                            <a href="{{ url_for('logout.logout') }}" class="logout-btn" style="color: white; text-decoration: none;  ">Cerrar sesión</a>
                         </li>
                     </ul>
                 </div>
+                
             </div>
     </div>
         <div class="group3">
@@ -61,7 +62,7 @@
                             <a href="#" id="toggle-productos">Ver más productos agregados</a>
                         </div>
                         <p id="total-carrito">Total: <span id="total-valor">0.00</span></p>
-                        <a href="#" id="comprar-todo" class="btn-1">Comprar Todo</a>
+                        <a href="#" id="comprar-todo" class="btn-1">Finalizar compra</a>
                         <a href="#" id="vaciar-carrito" class="btn-1">Vaciar Carrito</a>
                     </div>
                 </li>

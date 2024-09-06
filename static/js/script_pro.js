@@ -15,7 +15,26 @@ document.addEventListener('DOMContentLoaded', function() {
     imgCarrito.addEventListener('click', function() {
         carritoContainer.style.display = carritoContainer.style.display === 'none' ? 'block' : 'none';
     });
-
+  
+    document.addEventListener('click', function(event) {
+        const imgCarrito = document.getElementById('img-carrito');
+    
+        // Solo cerrar el carrito si está visible
+        if (carritoContainer.style.display === 'block') {
+            // Cerrar carrito solo si se hace clic fuera del contenedor y del ícono
+            if (!carritoContainer.contains(event.target) && !imgCarrito.contains(event.target)) {
+                carritoContainer.style.display = 'none';
+            }
+        }
+    });
+    
+    
+    // Evitar que el clic dentro del carrito cierre el contenedor
+    carritoContainer.addEventListener('click', function(event) {
+        event.stopPropagation(); // Evita que el clic dentro del carrito cierre el carrito
+    });
+    
+    
     // Crear el modal para mensajes
     const modal = document.createElement('div');
     modal.style.display = 'none';
@@ -50,12 +69,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function mostrarMensaje(mensaje, tipo = 'success') {
         modalContent.innerHTML = `
-            <h2 style="color: ${tipo === 'success' ? '#28a745' : tipo === 'info' ? '#007bff' : '#dc3545'}; font-size: 36px; margin-bottom: 20px;">
+            <h2 style="color: ${tipo === 'success' ? '#ffbb00' : tipo === 'info' ? '#ffbb00' : '#dc3545'}; font-size: 36px; margin-bottom: 20px;">
                 ${tipo === 'success' ? '¡Éxito!' : tipo === 'info' ? 'Información' : 'Atención'}
             </h2>
             <p style="font-size: 24px; margin-bottom: 30px;">${mensaje}</p>
             <button id="cerrarModal" 
-                    style="background-color: #007bff; color: white; border: none; 
+                    style="background-color: #ffbb00; color: black; border: none; 
                     padding: 15px 30px; margin-top: 20px; border-radius: 8px; cursor: pointer;
                     font-size: 20px; transition: background-color 0.3s;">
                 Cerrar
@@ -94,10 +113,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </td>
                 <td>
-                    <button class="btn-remove" data-index="${index}" style="background-color: #c00000; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px;">Eliminar</button>
+          <button class="btn-remove" data-index="${index}" style="background-color: transparent; color: #c00000; border: none; padding: 6px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 12px;">
+    <i class="fas fa-trash-alt" style="font-size: 14px; color: #c00000;"></i>
+</button>
+
+
+
+
+
                     <br>
                     <br>
-                    <button class="btn-comprar" data-index="${index}" style="background-color: #0c6834; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Comprar</button>
+                   
                 </td>
             `;
         });
@@ -142,9 +168,11 @@ document.addEventListener('DOMContentLoaded', function() {
             actualizarCarrito();
         }
 
+        
+
         if (e.target.classList.contains('btn-comprar')) {
             if (!usuarioLogueado) {
-                mostrarMensaje('Primero inicia sesión para realizar la compra.', 'info');
+                mostrarMensaje('Primero inicia sesión para realizar la compra.', '');
                 return;
             }
 
@@ -177,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (!usuarioLogueado) {
-            mostrarMensaje('Primero inicia sesión para realizar la compra.', 'info');
+            mostrarMensaje('Primero inicia sesión para realizar la compra.', '');
             return;
         }
 
@@ -218,4 +246,36 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     actualizarCarrito();
+});
+
+
+// Selecciona los elementos
+const carrito = document.querySelector('#carrito');
+const abrirCarritoBtn = document.querySelector('#abrir-carrito');
+const closeBtn = document.querySelector('.close-btn');
+
+// Función para cerrar el carrito
+function cerrarCarrito() {
+    carrito.style.display = 'none';
+}
+
+// Abrir el carrito
+abrirCarritoBtn.addEventListener('click', function(event) {
+    event.stopPropagation(); // Evita que el clic se propague
+    carrito.style.display = 'block'; // Muestra el carrito
+});
+
+// Cerrar el carrito al hacer clic en el botón de cierre
+closeBtn.addEventListener('click', cerrarCarrito);
+
+// Cerrar el carrito al hacer clic fuera del carrito
+document.addEventListener('click', function(event) {
+    if (carrito.style.display === 'block' && !carrito.contains(event.target) && !abrirCarritoBtn.contains(event.target)) {
+        cerrarCarrito();
+    }
+});
+
+// Evitar que el carrito se cierre al hacer clic dentro de él
+carrito.addEventListener('click', function(event) {
+    event.stopPropagation(); // Evita que el clic se propague al documento
 });

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
 from mvc.model.db_connection import create_connection, close_connection
 from mysql.connector import Error
+import bcrypt  # Importar bcrypt
 
 login_controller = Blueprint('login_controller', __name__)
 
@@ -8,7 +9,7 @@ login_controller = Blueprint('login_controller', __name__)
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
-        contrasena = request.form.get('contrasena')
+        contrasena = request.form.get('contrasena').encode('utf-8')  # Convertir a bytes
         connection = None
         try:
             connection = create_connection()
@@ -21,8 +22,8 @@ def login():
 
             # Verifica si el usuario existe
             if user:
-                # Verifica si la contraseña es correcta
-                if user['contraseña'] == contrasena:
+                # Verifica si la contraseña es correcta usando bcrypt
+                if bcrypt.checkpw(contrasena, user['contraseña'].encode('utf-8')):
                     # Almacena el usuario en la sesión
                     session['user'] = user
                     

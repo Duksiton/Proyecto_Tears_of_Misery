@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pagina Producto</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_check_product.css') }}" />
+    
 </head>
 <body>
     <header>
@@ -47,7 +48,7 @@
                             <a href="#" id="toggle-productos">Ver más productos agregados</a>
                         </div>
                         <p id="total-carrito">Total: <span id="total-valor">0.00</span></p>
-                        <a href="#" id="comprar-todo" class="btn-1">Comprar Todo</a>
+                        <a href="#" id="comprar-todo" class="btn-1">Finalizar compra</a>
                         <a href="#" id="vaciar-carrito" class="btn-1">Vaciar Carrito</a>
                     </div>
                 </li>
@@ -149,6 +150,7 @@
     </footer>
 
     <script src="https://kit.fontawesome.com/81581fb069.js" crossorigin="anonymous"></script>
+    
     <script src="{{ url_for('static', filename='js/script_pro.js') }}"></script>
 </body>
 </html>

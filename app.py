@@ -7,6 +7,7 @@ from mvc.controller.login_controller import login_controller
 from mvc.controller.registro_controller import registro_controller
 from mvc.controller.perfil_controller import perfil_controller
 from mvc.controller.logout_controller import logout_controller
+import bcrypt
 
 app = Flask(__name__)
 app.secret_key = 'tearsofmiseryconexion'
@@ -155,6 +156,48 @@ def obtener_producto(id):
     finally:
         cursor.close()
         close_connection(conn)
+
+def actualizar_contrasenas_usuarios():
+    usuarios = [
+        {
+            'email': 'admin1@gmail.com',
+            'contrasena': 'miContraseñaAdmin',
+            'rol': 'Administrador'
+        },
+        {
+            'email': 'user1@gmail.com',
+            'contrasena': 'miContraseña',
+            'rol': 'Usuario'
+        }
+    ]
+    
+    connection = None
+    try:
+        connection = create_connection()
+        cursor = connection.cursor()
+        
+        for usuario in usuarios:
+            hashed_password = bcrypt.hashpw(usuario['contrasena'].encode('utf-8'), bcrypt.gensalt())
+            
+            # Actualiza la contraseña del usuario
+            update_query = "UPDATE usuario SET contraseña = %s WHERE email = %s AND nombreRol = %s"
+            cursor.execute(update_query, (hashed_password.decode('utf-8'), usuario['email'], usuario['rol']))
+        
+        connection.commit()
+        print("Contraseñas de usuarios actualizadas con éxito.")
+    
+    except Exception as e:
+        print(f"Error al actualizar las contraseñas de usuarios: {e}")
+        if connection:
+            connection.rollback()
+    
+    finally:
+        if connection and connection.is_connected():
+            cursor.close()
+            connection.close()
+
+# Llama a la función de actualización antes de iniciar la aplicación
+actualizar_contrasenas_usuarios()
 
 
 if __name__ == '__main__':

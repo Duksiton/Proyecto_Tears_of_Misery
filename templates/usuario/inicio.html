@@ -29,13 +29,13 @@
     <div class="group2">
         <div class="user-profile" style="position: relative; display: inline-block;">
             <i class="fas fa-user-circle" style="font-size: 40px; color: white; cursor: pointer;" onclick="toggleMenu()"></i>
-            <div class="dropdown-menu" id="userMenu" style="display: none; position: absolute; background-color: #333; color: white; border-radius: 5px; padding: 10px; z-index: 1;">
-                <ul style="list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column;">
-                    <li style="padding: 8px 12px;">
-                        <a href="{{ url_for('perfil.perfil') }}" class="logout-btn" style="color: white; text-decoration: none;">Configuración</a>
+            <div class="dropdown-menu" id="userMenu" style="display: none; position: absolute; background-color: #333; color: white; border-radius: 5px; padding: 10px; z-index: 1; width: 200px;">
+                <ul style="list-style-type: none; padding: 0; margin: 0; display: flex; flex-direction: column; width: 100%;">
+                    <li style="padding: 8px 12px; width: 100%; box-sizing: border-box;">
+                        <a href="{{ url_for('perfil.perfil') }}" class="logout-btn" style="color: white; text-decoration: none;   ">Perfil</a>
                     </li>
-                    <li style="padding: 8px 12px;">
-                        <a href="{{ url_for('logout.logout') }}" class="logout-btn" style="color: white; text-decoration: none;">Cerrar sesión</a>
+                    <li style="padding: 8px 12px; width: 100%; box-sizing: border-box;">
+                        <a href="{{ url_for('logout.logout') }}" class="logout-btn" style="color: white; text-decoration: none;  ">Cerrar sesión</a>
                     </li>
                 </ul>
             </div>
@@ -64,7 +64,7 @@
                         <a href="#" id="toggle-productos">Ver más productos agregados</a>
                     </div>
                     <p id="total-carrito">Total: <span id="total-valor">0.00</span></p>
-                    <a href="#" id="comprar-todo" class="btn-1">Comprar Todo</a>
+                    <a href="#" id="comprar-todo" class="btn-1">Finalizar compra</a>
                     <a href="#" id="vaciar-carrito" class="btn-1">Vaciar Carrito</a>
                 </div>
             </li>
@@ -81,17 +81,73 @@
       <br>
       <div class="slider-title"><strong>Galería de Productos</strong></div>
       <div class="slider-box">
-          <ul>
-              <li><img src="{{ url_for('static', filename='images/productos/camisas/camisas_dobles_tears.jpg') }}" alt=""></li>
-              <li><img src="{{ url_for('static', filename='images/productos/sacos/saco_tears.jpg') }}" alt=""></li>
-              <li><img src="{{ url_for('static', filename='images/productos/sacos/saco_capota_tears.jpg') }}" alt=""></li>
-              <li><img src="{{ url_for('static', filename='images/productos/discos/cd.jpg') }}" alt=""></li>
-              <li><img src="{{ url_for('static', filename='images/productos/discos/cd2.jpg') }}" alt=""></li>
-              <li><img src="{{ url_for('static', filename='images/productos/camisas/camisa_unisex.jpg') }}" alt=""></li>
-              <li><img src="{{ url_for('static', filename='images/productos/camisas/camisa_tears2.jpg') }}" alt=""></li>
-              <li><img src="{{ url_for('static', filename='images/productos/camisas/camisa_blanca_tears.jpg') }}" alt=""></li>
-          </ul>
-      </div>
+        <button class="prev" onclick="prevSlide()">&#10094;</button>
+      <ul class="slider-track">
+        <li><img src="{{ url_for('static', filename='images/productos/camisas/camisas_dobles_tears.jpg') }}" alt=""></li>
+        <li><img src="{{ url_for('static', filename='images/productos/sacos/saco_tears.jpg') }}" alt=""></li>
+        <li><img src="{{ url_for('static', filename='images/productos/sacos/saco_capota_tears.jpg') }}" alt=""></li>
+        <li><img src="{{ url_for('static', filename='images/productos/discos/cd.jpg') }}" alt=""></li>
+        <li><img src="{{ url_for('static', filename='images/productos/discos/cd2.jpg') }}" alt=""></li>
+        <li><img src="{{ url_for('static', filename='images/productos/camisas/camisa_unisex.jpg') }}" alt=""></li>
+        <li><img src="{{ url_for('static', filename='images/productos/camisas/camisa_tears2.jpg') }}" alt=""></li>
+        <li><img src="{{ url_for('static', filename='images/productos/camisas/camisa_blanca_tears.jpg') }}" alt=""></li>
+      </ul>
+      <button class="next" onclick="nextSlide()">&#10095;</button>
+    </div>
+  
+    
+  </div>
+  
+  <script>
+let currentSlide = 0;
+    const slides = document.querySelectorAll('.slider-box li');
+    const totalSlides = slides.length;
+    const sliderUl = document.querySelector('.slider-box ul');
+
+    function showSlide(index) {
+        if (index >= totalSlides) {
+            currentSlide = 0;
+        } else if (index < 0) {
+            currentSlide = totalSlides - 1;
+        } else {
+            currentSlide = index;
+        }
+        sliderUl.style.transform = `translateX(-${currentSlide * 12.5}%)`;
+    }
+
+    function nextSlide() {
+        showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+        showSlide(currentSlide - 1);
+    }
+
+    const nextButton = document.querySelector('.next');
+    const prevButton = document.querySelector('.prev');
+
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            nextSlide();
+            stopAutoSlide();
+        });
+    }
+
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            prevSlide();
+            stopAutoSlide();
+        });
+    }
+
+    let autoSlide = setInterval(nextSlide, 5000);
+
+    function stopAutoSlide() {
+        clearInterval(autoSlide);
+    }
+  </script>
+
+    
 
       <section class="albums-section">
           <div class="albums-title">
