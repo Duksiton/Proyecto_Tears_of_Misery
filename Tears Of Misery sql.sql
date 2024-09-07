@@ -1,7 +1,6 @@
 create database tearsOfMisery;
 use tearsOfMisery;
 
-
 create table roles (
 idRol int primary key auto_increment NOT NULL unique,
 nombreRol varchar (20) NOT NULL unique 
@@ -68,11 +67,6 @@ foreign key (idPedido) references pedido (idPedido)
 insert into roles (nombreRol) values ('Administrador');
 insert into roles (nombreRol) values ('Usuario');
 
-insert into usuario (nombre, email, contraseña, direccion, telefono, nombreRol) values
-('Usuario', 'usuario@gmail.com','usuario2024','Calle 37 A Bis Sur','3227467685', 'Usuario');
-
-insert into usuario (nombre, email, contraseña, direccion, telefono, nombreRol) values
-('Administrador', 'admin@gmail.com','tearsofmisery','Calle 5 A 5 B Sur','3008155607', 'Administrador');
 
 
 insert into categoria (nombre, descripcion) values ('Camisas', 'Negra con rayas');
