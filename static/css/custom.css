@@ -274,7 +274,7 @@ overflow:auto;
 	 }
 
 	 input[type="search"]{
-		background-color:#4a5263;
+		background-color:#ffffff;
 		color:#fff;
 		padding-left:20px;
 		border:none;
@@ -738,50 +738,66 @@ background-color:rgba(0,0,0,0.09);
 	   
 	   
 	   /*-------modal-style start------*/
-	   .modal .modal-dialog{
-		   max-width:400px;
-	   }
-	   .modal .modal-header, .modal .modal-body,.modal .modal-footer{
-		   padding:20px 30px;
-	   }
-	   .modal .modal-content{
-		   border-radius:3px;
-	   }
-	   
-	   .modal .modal-footer{
-		   background:#ecf0f1;
-		   border-radius:0 0 3px 3px;
-	   }
-	   
-	   .modal .modal-title{
-		   display:inline-block;
-	   }
-	   
-	   .modal .form-control{
-		   border-radius:2px;
-		   box-shadow:none;
-		   border-color:#dddddd;
-	   }
-	   
-	    .modal textarea.form-control{
-			resize:vertical;
-		}
-		
-		  .modal .btn{
-			  border-radius:2px;
-			  min-width:100px;
-		  }
-		  
-		  .modal form label{
-			  font-weight:normal;
-		  }
-		  
-		  
-		  
-		  
-		  
-		  
-		  
+	   .modal .modal-dialog {
+		max-width: 800px; /* Ajusta este valor según el tamaño que prefieras */
+		margin: auto;
+	}
+	
+	.modal .modal-header, .modal .modal-body, .modal .modal-footer {
+		padding: 20px 30px;
+		display: flex;
+		justify-content: space-between; /* Para distribuir los elementos a los lados */
+		align-items: center; /* Centrar verticalmente los elementos */
+	}
+	
+	.modal .modal-content {
+		border-radius: 3px;
+	}
+	
+	.modal .modal-footer {
+		background: #ecf0f1;
+		border-radius: 0 0 3px 3px;
+		display: flex;
+		justify-content: space-between;
+	}
+	
+	.modal .modal-title {
+		display: inline-block;
+		flex: 1; /* Para ocupar el espacio disponible */
+	}
+	
+	.modal .form-control {
+		border-radius: 2px;
+		box-shadow: none;
+		border-color: #dddddd;
+	}
+	
+	.modal textarea.form-control {
+		resize: vertical;
+	}
+	
+	.modal .btn {
+		border-radius: 2px;
+		min-width: 100px;
+	}
+	
+	.modal form label {
+		font-weight: normal;
+	}
+	
+	/* Distribución adicional si tienes dos secciones dentro del modal */
+	.modal .left-section {
+		flex: 1; /* Ocupa el 50% del espacio en la izquierda */
+		padding-right: 15px; /* Espaciado entre las secciones */
+	}
+	
+	.modal .right-section {
+		flex: 1; /* Ocupa el 50% del espacio en la derecha */
+		padding-left: 15px; /* Espaciado entre las secciones */
+	}
+	
+	
+	  
 	   
 	   	   /*-------modal-style end------*/
 		   

@@ -132,22 +132,11 @@
 				</div>
 
 				<div class="xp-breadcrumbbar text-center">
-					<!-- Mostrar un único mensaje flash -->
-					<div class="flash-messages">
-						{% with messages = get_flashed_messages(with_categories=true) %}
-						{% if messages %}
-						<div class="flash-message">
-							<span>{{ messages[0][1] }}</span>
-							<button class="close-btn"
-								onclick="this.parentElement.style.display='none';">&times;</button>
-						</div>
-						{% endif %}
-						{% endwith %}
-					</div>
+				
 
-					<h4 class="page-title">Panel</h4>
+					<h4 class="page-title">Panel Administrativo</h4>
 					<ol class="breadcrumb">
-						<li class="breadcrumb-item active" aria-curent="page">Panel Administrativo</li>
+						<li class="breadcrumb-item active" aria-curent="page"></li>
 					</ol>
 				</div>
 
@@ -270,8 +259,7 @@
 
 				<!----add-modal start--------->
 				<!-- Modal para Agregar Producto -->
-				<div class="modal fade" id="agregarProducto" tabindex="-1" role="dialog"
-					aria-labelledby="agregarProductoLabel" aria-hidden="true">
+				<div class="modal fade" id="agregarProducto" tabindex="-1" role="dialog" aria-labelledby="agregarProductoLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -280,66 +268,70 @@
 									<span aria-hidden="true">&times;</span>
 								</button>
 							</div>
-							<form id="addProductForm" method="POST" enctype="multipart/form-data"
-								action="{{ url_for('producto_controller.add_product') }}">
+							<form id="addProductForm" method="POST" enctype="multipart/form-data" action="{{ url_for('producto_controller.add_product') }}">
 								<div class="modal-body">
-									<div class="file-upload-container">
-										<div class="form-group">
-											<input type="file" id="imagen" name="imagen" class="file-upload-input"
-												required>
-											<label for="imagen" class="file-upload-label">
-												<i class="fas fa-cloud-upload-alt"></i>
-												<span>Selecciona una imagen</span>
-											</label>
-											<div class="file-name"></div>
+									<div class="left-section">
+										<!-- Sección izquierda -->
+										<div class="file-upload-container">
+											<div class="form-group">
+												<input type="file" id="imagen" name="imagen" class="file-upload-input" required>
+												<label for="imagen" class="file-upload-label">
+													<i class="fas fa-cloud-upload-alt"></i>
+													<span>Selecciona una imagen</span>
+												</label>
+												<div class="file-name"></div>
+											</div>
 										</div>
+										<div class="form-group">
+											<label for="nombre">Nombre</label>
+											<input type="text" id="nombre" name="nombre" class="form-control" required>
+										</div>
+										<div class="form-group">
+											<label for="descripcion">Descripción</label>
+											<textarea id="descripcion" name="descripcion" class="form-control" rows="4" required></textarea>
+										</div>
+										
 									</div>
-									<div class="form-group">
-										<label for="nombre">Nombre</label>
-										<input type="text" id="nombre" name="nombre" class="form-control" required>
-									</div>
-									<div class="form-group">
-										<label for="descripcion">Descripción</label>
-										<input type="text" id="descripcion" name="descripcion" class="form-control"
-											required>
-									</div>
-									<div class="form-group">
-										<label for="precio">Precio</label>
-										<input type="text" id="precio" name="precio" class="form-control" required>
-									</div>
-									<div class="form-group">
-										<label for="stock">Stock</label>
-										<input type="number" id="stock" name="stock" class="form-control" required>
-									</div>
-									<div class="form-group">
-										<label for="idCat">Categorías</label>
-										<select id="idCat" name="idCat" class="form-control" required>
-											<option value="">Elige una opción</option>
-											<option value="1">Camisas</option>
-											<option value="2">Discos</option>
-											<option value="3">Sacos</option>
-										</select>
-									</div>
-									<div class="form-group">
-										<label for="talla">Tallas</label>
-										<select id="talla" name="talla" class="form-control">
-											<option value="">Elige una opción</option>
-											<option value="S">S</option>
-											<option value="M">M</option>
-											<option value="L">L</option>
-											<option value="XL">XL</option>
-										</select>
+									<div class="right-section">
+										<!-- Sección derecha -->
+										<div class="form-group">
+											<label for="precio">Precio</label>
+											<input type="text" id="precio" name="precio" class="form-control" required>
+										</div>
+										<div class="form-group">
+											<label for="stock">Stock</label>
+											<input type="number" id="stock" name="stock" class="form-control" required>
+										</div>
+										<div class="form-group">
+											<label for="idCat">Categorías</label>
+											<select id="idCat" name="idCat" class="form-control" required>
+												<option value="">Elige una opción</option>
+												<option value="1">Camisas</option>
+												<option value="2">Discos</option>
+												<option value="3">Sacos</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<label for="talla">Tallas</label>
+											<select id="talla" name="talla" class="form-control">
+												<option value="">Elige una opción</option>
+												<option value="S">S</option>
+												<option value="M">M</option>
+												<option value="L">L</option>
+												<option value="XL">XL</option>
+											</select>
+										</div>
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary"
-										data-dismiss="modal">Cancelar</button>
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 									<button type="submit" class="btn btn-success">Añadir</button>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
+				
 
 
 				<!----edit-modal end--------->
@@ -348,8 +340,7 @@
 
 
 				<!----edit-modal start--------->
-				<div class="modal fade" id="editarProducto" tabindex="-1" role="dialog"
-					aria-labelledby="editarProductoLabel" aria-hidden="true">
+				<div class="modal fade" id="editarProducto" tabindex="-1" role="dialog" aria-labelledby="editarProductoLabel" aria-hidden="true">
 					<div class="modal-dialog" role="document">
 						<div class="modal-content">
 							<div class="modal-header">
@@ -361,64 +352,69 @@
 							<form id="editarProductoForm" method="POST" enctype="multipart/form-data" action="">
 								<input type="hidden" id="productoIdEdit" name="productoId">
 								<div class="modal-body">
-									<div class="file-upload-container-edit">
-										<div class="form-group-edit">
-											<input type="file" id="imagenEdit" name="imagen"
-												class="file-upload-input-edit" data-image="">
-											<label for="imagenEdit" class="file-upload-label-edit">
-												<i class="fas fa-cloud-upload-alt"></i>
-												<span>Selecciona una imagen</span>
-											</label>
-											<div class="file-name-edit"></div>
-											<input type="hidden" id="imagenActual" name="imagenActual" value="">
+									<div class="left-section">
+										<!-- Sección izquierda -->
+										<div class="file-upload-container-edit">
+											<div class="form-group-edit">
+												<input type="file" id="imagenEdit" name="imagen" class="file-upload-input-edit" data-image="">
+												<label for="imagenEdit" class="file-upload-label-edit">
+													<i class="fas fa-cloud-upload-alt"></i>
+													<span>Selecciona una imagen</span>
+												</label>
+												<div class="file-name-edit"></div>
+												<input type="hidden" id="imagenActual" name="imagenActual" value="">
+											</div>
 										</div>
+										<div class="form-group">
+											<label for="nombreEdit">Nombre</label>
+											<input type="text" id="nombreEdit" name="nombre" class="form-control" required>
+										</div>
+										<div class="form-group">
+											<label for="descripcionEdit">Descripción</label>
+											<textarea id="descripcionEdit" name="descripcion" class="form-control" rows="4" required></textarea>
+										</div>
+										
 									</div>
-									<div class="form-group">
-										<label for="nombreEdit">Nombre</label>
-										<input type="text" id="nombreEdit" name="nombre" class="form-control" required>
-									</div>
-									<div class="form-group">
-										<label for="descripcionEdit">Descripción</label>
-										<input type="text" id="descripcionEdit" name="descripcion" class="form-control"
-											required>
-									</div>
-									<div class="form-group">
-										<label for="precioEdit">Precio</label>
-										<input type="text" id="precioEdit" name="precio" class="form-control" required>
-									</div>
-									<div class="form-group">
-										<label for="stockEdit">Stock</label>
-										<input type="number" id="stockEdit" name="stock" class="form-control" required>
-									</div>
-									<div class="form-group">
-										<label for="idCatEdit">Categorías</label>
-										<select id="idCatEdit" name="idCat" class="form-control" required>
-											<option value="">Elige una opción</option>
-											<option value="1">Camisas</option>
-											<option value="2">Discos</option>
-											<option value="3">Sacos</option>
-										</select>
-									</div>
-									<div class="form-group">
-										<label for="tallaEdit">Tallas</label>
-										<select id="tallaEdit" name="talla" class="form-control">
-											<option value="">Elige una opción</option>
-											<option value="S">S</option>
-											<option value="M">M</option>
-											<option value="L">L</option>
-											<option value="XL">XL</option>
-										</select>
+									<div class="right-section">
+										<!-- Sección derecha -->
+										<div class="form-group">
+											<label for="precioEdit">Precio</label>
+											<input type="text" id="precioEdit" name="precio" class="form-control" required>
+										</div>
+										<div class="form-group">
+											<label for="stockEdit">Stock</label>
+											<input type="number" id="stockEdit" name="stock" class="form-control" required>
+										</div>
+										<div class="form-group">
+											<label for="idCatEdit">Categorías</label>
+											<select id="idCatEdit" name="idCat" class="form-control" required>
+												<option value="">Elige una opción</option>
+												<option value="1">Camisas</option>
+												<option value="2">Discos</option>
+												<option value="3">Sacos</option>
+											</select>
+										</div>
+										<div class="form-group">
+											<label for="tallaEdit">Tallas</label>
+											<select id="tallaEdit" name="talla" class="form-control">
+												<option value="">Elige una opción</option>
+												<option value="S">S</option>
+												<option value="M">M</option>
+												<option value="L">L</option>
+												<option value="XL">XL</option>
+											</select>
+										</div>
 									</div>
 								</div>
 								<div class="modal-footer">
-									<button type="button" class="btn btn-secondary"
-										data-dismiss="modal">Cancelar</button>
+									<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
 									<button type="submit" class="btn btn-success">Guardar</button>
 								</div>
 							</form>
 						</div>
 					</div>
 				</div>
+				
 
 
 
@@ -499,19 +495,7 @@
 	<!-- Optional JavaScript -->
 
 
-	<script type="text/javascript">
-		$(document).ready(function () {
-			$(".xp-menubar").on('click', function () {
-				$("#sidebar").toggleClass('active');
-				$("#content").toggleClass('active');
-			});
-
-			$('.xp-menubar,.body-overlay').on('click', function () {
-				$("#sidebar,.body-overlay").toggleClass('show-nav');
-			});
-
-		});
-	</script>
+	
 
 	<script>
 		document.querySelector('.custom-file-label').addEventListener('click', function () {
@@ -715,7 +699,7 @@
 	</script>
 	
 
-<script src="{{ url_for('static', filename='js/barra-busqueda/barra.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/barra-busqueda/barra_productos.js') }}"></script>
 
 
@@ -731,7 +715,22 @@
 	<!-- Incluir Bootstrap JS -->
 	<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 
-
+	<script>
+	$(document).ready(function () {
+		console.log("Document ready");
+		
+		$(".xp-menubar").on('click', function () {
+		  console.log("xp-menubar clicked");
+		  $("#sidebar").toggleClass('active');
+		  $("#content").toggleClass('active');
+		});
+	  
+		$('.xp-menubar, .body-overlay').on('click', function () {
+		  console.log("Overlay or xp-menubar clicked");
+		  $("#sidebar, .body-overlay").toggleClass('show-nav');
+		});
+	  });
+	</script>
 
 </body>
 

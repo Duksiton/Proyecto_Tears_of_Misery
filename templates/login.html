@@ -14,6 +14,40 @@
 <body>
 
 
+    <style>
+        .inputBox {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .inputBox label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #d3d3d3; /* Gris claro */
+        }
+        .inputBox input {
+            width: calc(100% - 40px); /* Ajusta el ancho para el botón */
+            padding: 0.5rem;
+            box-sizing: border-box;
+        }
+        .inputBox .toggle-password {
+            position: absolute;
+            bottom: 100px; /* Ajusta este valor para mover el botón más abajo */
+            right: 10px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            color: #d3d3d3; /* Gris claro */
+            padding: 0;
+            font-size: 1.5rem; /* Tamaño del icono */
+        }
+        .inputBox .toggle-password i {
+            display: inline-block;
+        }
+    </style>
+    
+    
+
     <header>
         <a href="{{ url_for('index') }}" class="logo">
             <img src="{{ url_for('static', filename='images/LOGO.png') }}" alt="Tears Of Misery Logo">
@@ -93,13 +127,17 @@
 
                 <form method="post" action="{{ url_for('login_controller.login') }}">
                     <div class="inputBox">
-                        <input type="email" id="email" name="email" required minlength="4" maxlength="60"
-                            placeholder="Ingrese su correo electrónico">
+                        <div class="registration-link">
+                            <h5>Ingrese su correo electrónico</h5>
+                        </div>
+                        <input type="email" id="email" name="email" required minlength="4" maxlength="60">
                     </div>
-
+                    
                     <div class="inputBox password-container">
-                        <input id="Password" type="password" name="contrasena" required minlength="4" maxlength="30"
-                            placeholder="Ingrese su contraseña">
+                        <div class="registration-link">
+                            <h5>Ingrese su contraseña</h5>
+                        </div>
+                        <input id="Password" type="password" name="contrasena" required minlength="4" maxlength="30">
                         <button type="button" class="toggle-password" onclick="togglePassword()">
                             <i class="fas fa-eye"></i>
                         </button>

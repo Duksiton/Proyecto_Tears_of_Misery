@@ -157,6 +157,51 @@ def obtener_producto(id):
         cursor.close()
         close_connection(conn)
 
+
+@app.route('/api/usuarios', methods=['GET'])
+def get_usuarios():
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        page = int(request.args.get('page', 1))
+        items_per_page = int(request.args.get('items_per_page', 5))
+        offset = (page - 1) * items_per_page
+        search_query = request.args.get('query', '')
+
+        # Construcción de la consulta con búsqueda y paginación
+        query = """
+        SELECT u.*
+        FROM usuario u
+        WHERE u.nombre LIKE %s OR u.email LIKE %s OR u.direccion LIKE %s
+        OR u.telefono LIKE %s OR u.nombreRol LIKE %s
+        LIMIT %s OFFSET %s
+        """
+        like_query = f"%{search_query}%"
+        cursor.execute(query, (like_query, like_query, like_query, like_query, like_query, items_per_page, offset))
+        usuarios = cursor.fetchall()
+
+        # Consulta para obtener el total de usuarios sin paginación
+        count_query = """
+        SELECT COUNT(*) AS total
+        FROM usuario
+        WHERE nombre LIKE %s OR email LIKE %s OR direccion LIKE %s
+        OR telefono LIKE %s OR nombreRol LIKE %s
+        """
+        cursor.execute(count_query, (like_query, like_query, like_query, like_query, like_query))
+        total = cursor.fetchone()['total']
+
+        return jsonify({'usuarios': usuarios, 'total': total})
+    except Exception as e:
+        print('Error al obtener usuarios:', e)
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+
+        
+
 def actualizar_contrasenas_usuarios():
     usuarios = [
         {

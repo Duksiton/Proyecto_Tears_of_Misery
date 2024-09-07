@@ -1,6 +1,7 @@
 #Importaciones
 from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, jsonify
 from mvc.model.db_connection import create_connection, close_connection
+import bcrypt
 
 #Agregamos el blueprint de usuarios_controller
 usuarios_controller = Blueprint('usuarios_controller', __name__)
@@ -78,6 +79,9 @@ def agregar_usuario():
         telefono = request.form['telefono']
         nombreRol = request.form['nombreRol']
         
+        # Encriptar la contraseña
+        hashed_contraseña = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt())
+
         conn = create_connection()
         if conn is None:
             flash("Error de conexión a la base de datos")
@@ -88,7 +92,7 @@ def agregar_usuario():
             cursor.execute("""
                 INSERT INTO usuario (nombre, email, contraseña, direccion, telefono, nombreRol)
                 VALUES (%s, %s, %s, %s, %s, %s)
-            """, (nombre, email, contraseña, direccion, telefono, nombreRol))
+            """, (nombre, email, hashed_contraseña, direccion, telefono, nombreRol))
             conn.commit()
             flash("Usuario añadido con éxito")
             return redirect(url_for('usuarios_controller.listar_usuarios'))
@@ -99,7 +103,7 @@ def agregar_usuario():
             cursor.close()
             close_connection(conn)
     
-    return render_template('admin/add_user.html')
+    return render_template('admin/users.html')
 
 #Actualizamos usuarios
 @usuarios_controller.route('/update_user/<int:id>', methods=['POST'])
@@ -117,16 +121,24 @@ def update_user(id):
         direccion = request.form.get('direccion')
         telefono = request.form.get('telefono')
         nombreRol = request.form.get('nombreRol')
-     
+
+        # Solo encriptar la contraseña si no está vacía
+        if contraseña:
+            hashed_contraseña = bcrypt.hashpw(contraseña.encode('utf-8'), bcrypt.gensalt())
+        else:
+            # Obtener la contraseña actual si no se cambia
+            cursor.execute("SELECT contraseña FROM usuario WHERE idUsuario = %s", (id,))
+            hashed_contraseña = cursor.fetchone()[0]
+        
         cursor.execute("""
             UPDATE usuario SET nombre = %s, email = %s, contraseña = %s, direccion = %s, telefono = %s, nombreRol = %s
             WHERE idUsuario = %s
-        """, (nombre, email, contraseña, direccion, telefono, nombreRol, id))
+        """, (nombre, email, hashed_contraseña, direccion, telefono, nombreRol, id))
         
         conn.commit()
         flash("Usuario actualizado exitosamente")
     except Exception as e:
-        print(f"Error al actualizar el usuario: {str(e)}")  # Log para depuración
+        print(f"Error al actualizar el usuario: {str(e)}")
         flash(f"Error al actualizar el usuario: {str(e)}")
     finally:
         cursor.close()

@@ -22,7 +22,7 @@ def admin():
             JOIN categoria c ON p.idCat = c.idCat
         """)
         productos = cursor.fetchall()
-        flash(f"Se obtuvieron {len(productos)} productos")
+       
     except Exception as e:
         flash(f"Error al obtener productos: {str(e)}")
         productos = []
