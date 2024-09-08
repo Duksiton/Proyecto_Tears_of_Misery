@@ -28,13 +28,80 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    
     // Evitar que el clic dentro del carrito cierre el contenedor
     carritoContainer.addEventListener('click', function(event) {
         event.stopPropagation(); // Evita que el clic dentro del carrito cierre el carrito
     });
     
+    document.addEventListener('DOMContentLoaded', function () {
+        // Obtener los elementos del DOM
+        const quantityInput = document.querySelector('.input-quantity');
+        const incrementButton = document.querySelector('#increment');
+        const decrementButton = document.querySelector('#decrement');
+        const addToCartButton = document.querySelector('#add-to-cart');
     
+        // Asegurarse de que el campo de cantidad tenga un valor válido
+        quantityInput.value = parseInt(quantityInput.value, 10) || 1;
+    
+        // Evento de clic en el botón de incremento
+        incrementButton.addEventListener('click', function () {
+            let currentValue = parseInt(quantityInput.value, 10);
+            quantityInput.value = currentValue + 1;
+        });
+    
+        // Evento de clic en el botón de decremento
+        decrementButton.addEventListener('click', function () {
+            let currentValue = parseInt(quantityInput.value, 10);
+            if (currentValue > 1) { // Evitar que el valor sea menor que 1
+                quantityInput.value = currentValue - 1;
+            }
+        });
+    
+        // Asegurarse de que el campo de entrada solo acepte números válidos
+        quantityInput.addEventListener('input', function () {
+            const value = parseInt(quantityInput.value, 10);
+            if (isNaN(value) || value < 1) {
+                quantityInput.value = 1;
+            }
+        });
+    
+        // Evento de clic en el botón "Agregar al carrito"
+        addToCartButton.addEventListener('click', function () {
+            const productId = this.getAttribute('data-product-id');
+            const quantity = parseInt(quantityInput.value, 10);
+            const productName = this.getAttribute('data-name');
+            const productPrice = parseFloat(this.getAttribute('data-price'));
+            const size = document.getElementById('size') ? document.getElementById('size').value : "Album";
+            const requiereTalla = addToCartButton.getAttribute('data-size') === 'required';
+
+            if (requiereTalla && (!size || size === "")) {
+                mostrarMensaje('Por favor selecciona una talla antes de agregar al carrito.', 'info');
+                return;
+            }
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const existingProductIndex = cart.findIndex(item => item.id === productId && item.size === size);
+
+            if (existingProductIndex > -1) {
+                // Actualizar la cantidad si el producto ya está en el carrito
+                cart[existingProductIndex].quantity += quantity;
+            } else {
+                // Añadir nuevo producto al carrito
+                cart.push({
+                    id: productId,
+                    name: productName,
+                    price: productPrice,
+                    quantity: quantity,
+                    size: size,
+                    image: this.getAttribute('data-img')
+                });
+            }
+
+            localStorage.setItem('cart', JSON.stringify(cart));
+            mostrarMensaje(`Se han añadido ${quantity} ${productName}(s) (${size}) al carrito.`, 'success');
+        });
+    });
+
     // Crear el modal para mensajes
     const modal = document.createElement('div');
     modal.style.display = 'none';
@@ -113,12 +180,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </td>
                 <td>
-          <button class="btn-remove" data-index="${index}" style="background-color: transparent; color: #c00000; border: none; padding: 6px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 12px;">
-    <i class="fas fa-trash-alt" style="font-size: 14px; color: #c00000;"></i>
-</button>
+                    <button class="btn-remove" data-index="${index}" style="background-color: transparent; color: #c00000; border: none; padding: 6px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 12px;">
+                        <i class="fas fa-trash-alt" style="font-size: 14px; color: #c00000;"></i>
+                    </button>
                     <br>
                     <br>
-                   
                 </td>
             `;
         });
@@ -135,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function agregarAlCarrito(product) {
         const index = carrito.findIndex(item => item.name === product.name && item.size === product.size);
         if (index !== -1) {
-            carrito[index].quantity += 1;
+            carrito[index].quantity += product.quantity;
             mostrarMensaje(`Cantidad de "${product.name}" (${product.size}) aumentada. Ahora tienes ${carrito[index].quantity}.`, 'success');
         } else {
             carrito.push(product);
@@ -162,8 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             actualizarCarrito();
         }
-
-        
 
         if (e.target.classList.contains('btn-comprar')) {
             if (!usuarioLogueado) {
@@ -221,6 +285,8 @@ document.addEventListener('DOMContentLoaded', function() {
         addToCartButton.addEventListener('click', () => {
             const size = document.getElementById('size') ? document.getElementById('size').value : null;
             const requiereTalla = addToCartButton.getAttribute('data-size') === 'required';
+            const quantityInput = document.querySelector('.input-quantity');
+            const quantity = parseInt(quantityInput.value, 10) || 1;
 
             if (requiereTalla && (!size || size === "")) {
                 mostrarMensaje('Por favor selecciona una talla antes de agregar al carrito.', 'info');
@@ -233,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 price: parseFloat(addToCartButton.getAttribute('data-price')),
                 img: addToCartButton.getAttribute('data-img'),
                 size: requiereTalla ? (size || "Album") : "Album",
-                quantity: 1
+                quantity: quantity
             };
 
             agregarAlCarrito(product);
@@ -242,7 +308,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     actualizarCarrito();
 });
-
 
 // Selecciona los elementos
 const carrito = document.querySelector('#carrito');

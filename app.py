@@ -2,7 +2,7 @@
 from flask import Flask, render_template, flash, jsonify, request, redirect, url_for
 from mvc.model.db_connection import create_connection, close_connection
 from mvc.controller.producto_controller import producto_controller
-from mvc.controller.usuarios_controller import usuarios_controller
+from mvc.controller.usuarios_controller import usuarios_controller, verificar_usuario
 from mvc.controller.login_controller import login_controller
 from mvc.controller.registro_controller import registro_controller
 from mvc.controller.perfil_controller import perfil_controller
@@ -51,6 +51,11 @@ def mostrar_producto(id):
 @app.route('/catalogo')
 def mostrar_catalogo():
     return producto_controller.catalogo()
+
+@app.route('/verificacion/<int:id>')
+def verificacion(id):
+    return verificar_usuario(id)  # Redirige a la función que proporciona los datos del usuario
+
 
 @app.route('/productos')
 def mostrar_productos():

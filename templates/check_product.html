@@ -5,6 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pagina Producto</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+ 
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles_check_product.css') }}" />
     
 </head>
@@ -87,6 +89,16 @@
                     {% endif %}
                 </div>
     
+                <div class="container-add-cart">
+                    <div class="container-quantity">
+                        <input type="number" placeholder="1" value="1" min="1" class="input-quantity" />
+                        <div class="btn-increment-decrement">
+                            <i class="fa-solid fa-chevron-up" id="increment"></i>
+                            <i class="fa-solid fa-chevron-down" id="decrement"></i>
+                        </div>
+                    </div>
+                </div>
+                
                 <div class="container-add-cart" style="display: flex; justify-content: center; margin-top: 20px;">
                     <div class="product">
                         <button id="add-to-cart" class="btn-2" 
@@ -99,7 +111,7 @@
                         </button>
                     </div>
                 </div>
-    
+  
                 <div class="container-description">
                     <div class="title-description">
                         <h4>Descripción</h4>
@@ -148,6 +160,69 @@
             <small>&copy; 2023 <b>Tears Of Misery</b> - Todos los Derechos Reservados.</small>
         </div>
     </footer>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Obtener los elementos de incremento y decremento
+    const incrementBtn = document.getElementById('increment');
+    const decrementBtn = document.getElementById('decrement');
+    const quantityInput = document.querySelector('.input-quantity');
+    const sizeSelector = document.querySelector('#size-selector'); // Asegúrate de tener un selector para la talla
+
+    // Función para actualizar la cantidad en el carrito
+    function updateCart(quantity, size) {
+        // Aquí deberías hacer una solicitud a tu servidor para actualizar el carrito
+        fetch('/update-cart', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                quantity: quantity,
+                size: size
+            })
+        }).then(response => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                throw new Error('Error al actualizar el carrito');
+            }
+        }).then(data => {
+            // Manejar la respuesta del servidor
+            console.log('Carrito actualizado:', data);
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Evento de clic para el botón de incremento
+    incrementBtn.addEventListener('click', function () {
+        let quantity = parseInt(quantityInput.value);
+        if (quantity < 99) { // Establece un límite máximo si lo deseas
+            quantity++;
+            quantityInput.value = quantity;
+            updateCart(quantity, sizeSelector.value); // Llama a la función para actualizar el carrito
+        }
+    });
+
+    // Evento de clic para el botón de decremento
+    decrementBtn.addEventListener('click', function () {
+        let quantity = parseInt(quantityInput.value);
+        if (quantity > 1) {
+            quantity--;
+            quantityInput.value = quantity;
+            updateCart(quantity, sizeSelector.value); // Llama a la función para actualizar el carrito
+        }
+    });
+
+    // Evento para actualizar la talla seleccionada
+    sizeSelector.addEventListener('change', function () {
+        updateCart(parseInt(quantityInput.value), sizeSelector.value); // Llama a la función para actualizar el carrito
+    });
+});
+
+</script>
+
 
     <script src="https://kit.fontawesome.com/81581fb069.js" crossorigin="anonymous"></script>
     

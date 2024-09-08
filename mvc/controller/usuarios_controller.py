@@ -1,5 +1,5 @@
 #Importaciones
-from flask import Blueprint, render_template, request, redirect, url_for, flash, abort, jsonify
+from flask import Blueprint, render_template, request, redirect, session, url_for, flash, abort, jsonify
 from mvc.model.db_connection import create_connection, close_connection
 import bcrypt
 
@@ -32,6 +32,81 @@ def listar_usuarios():
         close_connection(conn)
     
     return render_template('admin/users.html', usuarios=usuarios)
+
+
+@usuarios_controller.route('/verificar_usuario', methods=['GET', 'POST'])
+def verificar_usuario():
+    if 'user' not in session:
+        return redirect(url_for('login'))
+
+    user = session['user']
+    user_id = user.get('idUsuario')
+
+    if request.method == 'POST':
+        # Obtén los datos del formulario
+        nombre = request.form.get('nombre')
+        correo = request.form.get('correo')
+        telefono = request.form.get('telefono')
+        direccion = request.form.get('direccion')
+
+        conn = create_connection()
+        if conn is None:
+            flash("Error de conexión a la base de datos")
+            return jsonify({"success": False, "message": "Error de conexión a la base de datos"}), 500
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute("""
+                UPDATE usuario
+                SET nombre = %s, email = %s, telefono = %s, direccion = %s
+                WHERE idUsuario = %s
+            """, (nombre, correo, telefono, direccion, user_id))
+            conn.commit()
+            
+            # Actualizar la sesión con los nuevos datos
+            user['nombre'] = nombre
+            user['email'] = correo
+            user['telefono'] = telefono
+            user['direccion'] = direccion
+            session['user'] = user
+
+            return redirect(url_for('usuarios_controller.perfil', _anchor='compras'))
+        except Exception as e:
+            return redirect(url_for('usuarios_controller.verificar_usuario'))
+        finally:
+            cursor.close()
+            close_connection(conn)
+
+    # Si es una solicitud GET, obtenemos los datos actuales del usuario
+    conn = create_connection()
+    if conn is None:
+        flash("Error de conexión a la base de datos")
+        abort(500, description="Error de conexión a la base de datos")
+
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute("""
+            SELECT idUsuario, nombre, email, telefono, direccion
+            FROM usuario
+            WHERE idUsuario = %s
+        """, (user_id,))
+        usuario = cursor.fetchone()
+        if not usuario:
+            flash("Usuario no encontrado.")
+            abort(404)
+    except Exception as e:
+        flash(f"Error al obtener usuario: {str(e)}")
+        usuario = {}
+    finally:
+        cursor.close()
+        close_connection(conn)
+    
+    return render_template('usuario/verificacion.html', user=usuario)
+
+
+
+
+
 
 #Obtenemos productos para organizarlos en listas
 @usuarios_controller.route('/usuarios/<int:id>', methods=['GET'])
@@ -93,7 +168,7 @@ def agregar_usuario():
                 VALUES (%s, %s, %s, %s, %s, %s)
             """, (nombre, email, hashed_contraseña, direccion, telefono, nombreRol))
             conn.commit()
-            flash("Usuario añadido con éxito")
+
             return redirect(url_for('usuarios_controller.listar_usuarios'))
         except Exception as e:
             flash(f"Error al añadir usuario: {str(e)}")

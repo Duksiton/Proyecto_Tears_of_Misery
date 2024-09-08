@@ -31,15 +31,20 @@ body {
 }
 
 header {
-    position: relative;
-    background: #1d1e1e;
-    padding: 20px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 15px 15px rgba(8, 0, 0, 0.05);
-    z-index: 2;
+    position: fixed; /* Fija el header */
+    top: 0; /* Posición en la parte superior de la página */
+    left: 0;
+    width: 100%; /* Abarca todo el ancho */
+    z-index: 1000; /* Asegura que el header esté por encima de otros elementos */
+    background-color: #1d1e1e;; /* Fondo del header (puedes cambiar el color si es necesario) */
+    padding: 10px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Añade una sombra para resaltar el header */
 }
+
+body {
+    padding-top: 100px; /* Agrega espacio en la parte superior del contenido para evitar que el contenido quede oculto debajo del header */
+}
+
 
 .logo {
     color: #fff;
@@ -294,7 +299,7 @@ header {
     display: block;
     margin-top: 10px;
     text-align: center;
-    background: #e4a700;
+    background: #dfd004;
     color: #000000;
     padding: 10px;
     text-decoration: none;
@@ -307,6 +312,26 @@ header {
 
 
 #comprar-todo:hover {
+    background: #e9ec08;
+}
+
+#explorar {
+    display: block;
+    margin-top: 10px;
+    text-align: center;
+    background: #e4a700;
+    color: #000000;
+    padding: 10px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1em;
+    font-weight: bold;
+    border: 1px solid #000000; /* Agrega un borde negro */
+    transition: background 0.3s;
+}
+
+
+#explorar:hover {
     background: #ffbb00;
 }
 

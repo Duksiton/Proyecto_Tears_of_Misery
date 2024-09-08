@@ -67,7 +67,7 @@ def add_product():
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (nombre, descripcion, precio, stock, idCat, talla, filename))
         conn.commit()
-        flash("Producto agregado exitosamente")
+     
     except Exception as e:
         flash(f"Error al agregar el producto: {str(e)}")
     finally:
@@ -226,7 +226,7 @@ def update_product(id):
         """, (nombre, descripcion, precio, stock, idCat, talla, filename, id))
         
         conn.commit()
-        flash("Producto actualizado exitosamente")
+      
     except Exception as e:
         print(f"Error al actualizar el producto: {str(e)}")  # Log para depuración
         flash(f"Error al actualizar el producto: {str(e)}")
@@ -260,7 +260,7 @@ def delete_product(id):
             # Luego, eliminamos el producto de la base de datos
             cursor.execute("DELETE FROM producto WHERE idProducto = %s", (id,))
             conn.commit()
-            flash("Producto eliminado exitosamente")
+          
         else:
             flash("Producto no encontrado")
 

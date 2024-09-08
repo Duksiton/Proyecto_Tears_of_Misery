@@ -1,6 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
-    console.log("Carrito cargado desde localStorage:", carrito);
     const totalCarritoSpan = document.getElementById('total-valor');
     const carritoContainer = document.getElementById('carrito');
     const imgCarrito = document.getElementById('img-carrito');
@@ -8,31 +7,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const verMasLink = document.getElementById('toggle-productos');
     let mostrarMas = false;
 
-   // Ocultar el carrito inicialmente
-   carritoContainer.style.display = 'none';
+    // Ocultar el carrito inicialmente
+    carritoContainer.style.display = 'none';
 
-   // Evento para mostrar/ocultar el carrito al hacer clic en el icono
-   imgCarrito.addEventListener('click', function() {
-       carritoContainer.style.display = carritoContainer.style.display === 'none' ? 'block' : 'none';
-   });
- 
-   document.addEventListener('click', function(event) {
-       const imgCarrito = document.getElementById('img-carrito');
-   
-       // Solo cerrar el carrito si está visible
-       if (carritoContainer.style.display === 'block') {
-           // Cerrar carrito solo si se hace clic fuera del contenedor y del ícono
-           if (!carritoContainer.contains(event.target) && !imgCarrito.contains(event.target)) {
-               carritoContainer.style.display = 'none';
-           }
-       }
-   });
-   
-   
-   // Evitar que el clic dentro del carrito cierre el contenedor
-   carritoContainer.addEventListener('click', function(event) {
-       event.stopPropagation(); // Evita que el clic dentro del carrito cierre el carrito
-   });
+    // Evento para mostrar/ocultar el carrito al hacer clic en el icono
+    imgCarrito.addEventListener('click', function () {
+        carritoContainer.style.display = carritoContainer.style.display === 'none' ? 'block' : 'none';
+    });
+
+    document.addEventListener('click', function (event) {
+        if (carritoContainer.style.display === 'block') {
+            if (!carritoContainer.contains(event.target) && !imgCarrito.contains(event.target)) {
+                carritoContainer.style.display = 'none';
+            }
+        }
+    });
+
+    carritoContainer.addEventListener('click', function (event) {
+        event.stopPropagation();
+    });
 
     // Crear el modal para mensajes
     const modal = document.createElement('div');
@@ -60,11 +53,20 @@ document.addEventListener('DOMContentLoaded', function() {
     modal.appendChild(modalContent);
 
     function formatearPrecio(precio) {
-        const precioRedondeado = Math.round(precio * 100) / 100; // Redondear a 2 decimales
-        const [parteEntera, parteDecimal] = precioRedondeado.toFixed(3).split('.'); // Formato con 2 decimales
-        const parteEnteraFormateada = new Intl.NumberFormat('es-CO').format(parseInt(parteEntera)); // Formatear parte entera con separadores de miles
-        return parteDecimal === '00' ? `$${parteEnteraFormateada}` : `$${parteEnteraFormateada}.${parteDecimal}`; // Usar punto en lugar de coma
+        // Redondear el precio a 2 decimales
+        const precioRedondeado = Math.round(precio * 100) / 100;
+    
+        // Convertir el número a cadena para manipular el formato
+        let [parteEntera, parteDecimal] = precioRedondeado.toFixed(3).split('.');
+    
+        // Formatear la parte entera con separadores de miles
+        parteEntera = parteEntera.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    
+        // Concatenar la parte decimal y asegurar el formato correcto
+        return `$${parteEntera}.${parteDecimal}`;
     }
+    
+    
     
 
     function mostrarMensaje(mensaje, tipo = 'success') {
@@ -81,12 +83,12 @@ document.addEventListener('DOMContentLoaded', function() {
             </button>
         `;
         modal.style.display = 'block';
-    
-        document.getElementById('cerrarModal').addEventListener('click', function() {
+
+        document.getElementById('cerrarModal').addEventListener('click', function () {
             modal.style.display = 'none';
         });
-    
-        modal.addEventListener('click', function(event) {
+
+        modal.addEventListener('click', function (event) {
             if (event.target === modal) {
                 modal.style.display = 'none';
             }
@@ -99,7 +101,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const itemsMostrar = mostrarMas ? carrito : carrito.slice(0, 3);
 
-       
         itemsMostrar.forEach((item, index) => {
             const row = carritoBody.insertRow();
             row.innerHTML = `
@@ -114,12 +115,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </td>
                 <td>
-          <button class="btn-remove" data-index="${index}" style="background-color: transparent; color: #c00000; border: none; padding: 6px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 12px;">
-    <i class="fas fa-trash-alt" style="font-size: 14px; color: #c00000;"></i>
-</button>
-                    <br>
-                    <br>
-                   
+                    <button class="btn-remove" data-index="${index}" style="background-color: transparent; color: #c00000; border: none; padding: 6px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 12px;">
+                        <i class="fas fa-trash-alt" style="font-size: 14px; color: #c00000;"></i>
+                    </button>
+                    <br><br>
                 </td>
             `;
         });
@@ -136,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function agregarAlCarrito(product) {
         const index = carrito.findIndex(item => item.name === product.name && item.size === product.size);
         if (index !== -1) {
-            carrito[index].quantity += 1;
+            carrito[index].quantity += product.quantity;
             mostrarMensaje(`Cantidad de "${product.name}" (${product.size}) aumentada. Ahora tienes ${carrito[index].quantity}.`, 'success');
         } else {
             carrito.push(product);
@@ -146,16 +145,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Supongamos que tienes una función o lógica que verifica si el usuario está logueado
-    const usuarioLogueado = true; // Cambia a `true` si el usuario ha iniciado sesión.
+    const usuarioLogueado = true;
 
-    document.getElementById('productos').addEventListener('click', function(e) {
+    document.getElementById('productos').addEventListener('click', function (e) {
         const index = parseInt(e.target.dataset.index);
-    
+
         if (e.target.classList.contains('btn-increase')) {
             carrito[index].quantity += 1;
             actualizarCarrito();
         }
-    
+
         if (e.target.classList.contains('btn-decrease')) {
             if (carrito[index].quantity > 1) {
                 carrito[index].quantity -= 1;
@@ -164,34 +163,14 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             actualizarCarrito();
         }
-    
-        if (e.target.classList.contains('btn-comprar')) {
-            if (!usuarioLogueado) {
-                mostrarMensaje('Primero inicia sesión para realizar la compra.', 'info');
-                return;
-            }
-        
-            // Aquí se realiza la compra y se muestra el mensaje antes de redirigir
-            const item = carrito[index];
-            mostrarMensaje(`Has comprado ${item.quantity} ${item.name} (${item.size}) por ${formatearPrecio(item.price * item.quantity)}`);
-            carrito.splice(index, 1); // Elimina el item del carrito después de mostrar el mensaje
-            actualizarCarrito();
-        
-            // Redirigir al usuario a la página de perfil después de 3 segundos
-            setTimeout(function() {
-                window.location.href = '/perfil';
-            }, 1500); // 3000 milisegundos = 3 segundos
-            return;
-        }
-        
-    
+
         if (e.target.classList.contains('btn-remove')) {
             carrito.splice(index, 1);
             actualizarCarrito();
         }
     });
 
-    document.getElementById('vaciar-carrito').addEventListener('click', function() {
+    document.getElementById('vaciar-carrito').addEventListener('click', function () {
         if (carrito.length === 0) {
             mostrarMensaje('El carrito ya está vacío.', 'info');
         } else {
@@ -201,33 +180,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    document.getElementById('comprar-todo').addEventListener('click', function() {
+    document.getElementById('comprar-todo').addEventListener('click', function () {
         if (carrito.length === 0) {
             mostrarMensaje('El carrito está vacío.', 'info');
             return;
         }
-    
+
         if (!usuarioLogueado) {
             mostrarMensaje('Primero inicia sesión para realizar la compra.', 'info');
             return;
         }
-    
+
         const total = carrito.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        mostrarMensaje(`Has comprado todos los productos por ${formatearPrecio(total)}. ¡Gracias por tu compra!`);
-    
-        // Limpia el carrito
+        mostrarMensaje(`La suma de tus productos es de: ${formatearPrecio(total)}, serás redirigido para confirmar tus datos, ¡gracias por la compra!`);
+
         carrito.length = 0;
         actualizarCarrito();
-    
-        // Redirige a la página de perfil después de 3 segundos
-        setTimeout(function() {
-            window.location.href = '/perfil';
-        }, 1500); // 3000 milisegundos = 3 segundos
-    });
-    
-    
 
-    verMasLink.addEventListener('click', function() {
+        setTimeout(function () {
+            window.location.href = '/verificar_usuario';
+        }, 5000);
+    });
+
+    verMasLink.addEventListener('click', function () {
         mostrarMas = !mostrarMas;
         actualizarCarrito();
     });
@@ -237,6 +212,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (addToCartButton) {
         addToCartButton.addEventListener('click', () => {
             const size = document.getElementById('size') ? document.getElementById('size').value : null;
+            const quantity = parseInt(document.getElementById('quantityInput').value, 10);
             const requiereTalla = addToCartButton.getAttribute('data-size') === 'required';
 
             if (requiereTalla && (!size || size === "")) {
@@ -250,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 price: parseFloat(addToCartButton.getAttribute('data-price')),
                 img: addToCartButton.getAttribute('data-img'),
                 size: requiereTalla ? (size || "Album") : "Album",
-                quantity: 1
+                quantity: quantity || 1
             };
 
             agregarAlCarrito(product);
@@ -258,35 +234,4 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     actualizarCarrito();
-});
-
-// Selecciona los elementos
-const carrito = document.querySelector('#carrito');
-const abrirCarritoBtn = document.querySelector('#abrir-carrito');
-const closeBtn = document.querySelector('.close-btn');
-
-// Función para cerrar el carrito
-function cerrarCarrito() {
-    carrito.style.display = 'none';
-}
-
-// Abrir el carrito
-abrirCarritoBtn.addEventListener('click', function(event) {
-    event.stopPropagation(); // Evita que el clic se propague
-    carrito.style.display = 'block'; // Muestra el carrito
-});
-
-// Cerrar el carrito al hacer clic en el botón de cierre
-closeBtn.addEventListener('click', cerrarCarrito);
-
-// Cerrar el carrito al hacer clic fuera del carrito
-document.addEventListener('click', function(event) {
-    if (carrito.style.display === 'block' && !carrito.contains(event.target) && !abrirCarritoBtn.contains(event.target)) {
-        cerrarCarrito();
-    }
-});
-
-// Evitar que el carrito se cierre al hacer clic dentro de él
-carrito.addEventListener('click', function(event) {
-    event.stopPropagation(); // Evita que el clic se propague al documento
 });
