@@ -268,14 +268,15 @@ overflow:auto;
 		  background-color:#1d1e1e;
 	 }
 	 
-	 .xd-topbar{
-		 width:100%;
-		 position:relative;
-	 }
-
+	 .xd-topbar {
+		width: 1298px;
+		position: relative;
+		transform: translateX(-2%); /* Centra el ancho completo de 200% */
+	}
+	
 	 input[type="search"]{
 		background-color:#ffffff;
-		color:#fff;
+		color:#000000;
 		padding-left:20px;
 		border:none;
 		border-radius:50px 0px 0px 50px;

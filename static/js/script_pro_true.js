@@ -99,6 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const itemsMostrar = mostrarMas ? carrito : carrito.slice(0, 3);
 
+       
         itemsMostrar.forEach((item, index) => {
             const row = carritoBody.insertRow();
             row.innerHTML = `
@@ -113,10 +114,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </td>
                 <td>
-                    <button class="btn-remove" data-index="${index}" style="background-color: #c00000; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px;">Eliminar</button>
+          <button class="btn-remove" data-index="${index}" style="background-color: transparent; color: #c00000; border: none; padding: 6px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 12px;">
+    <i class="fas fa-trash-alt" style="font-size: 14px; color: #c00000;"></i>
+</button>
                     <br>
                     <br>
-                    <button class="btn-comprar" data-index="${index}" style="background-color: #0c6834; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer;">Comprar</button>
+                   
                 </td>
             `;
         });

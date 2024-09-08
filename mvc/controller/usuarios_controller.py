@@ -23,8 +23,7 @@ def listar_usuarios():
         usuarios = cursor.fetchall()
         if not usuarios:
             flash("No se encontraron usuarios.")
-        else:
-            flash(f"Se obtuvieron {len(usuarios)} usuarios")
+           
     except Exception as e:
         flash(f"Error al obtener usuarios: {str(e)}")
         usuarios = []
@@ -136,7 +135,7 @@ def update_user(id):
         """, (nombre, email, hashed_contraseña, direccion, telefono, nombreRol, id))
         
         conn.commit()
-        flash("Usuario actualizado exitosamente")
+        
     except Exception as e:
         print(f"Error al actualizar el usuario: {str(e)}")
         flash(f"Error al actualizar el usuario: {str(e)}")
@@ -160,7 +159,7 @@ def delete_user(id):
         # Eliminamos el usuario de la base de datos
         cursor.execute("DELETE FROM usuario WHERE idUsuario = %s", (id,))
         conn.commit()
-        flash("Usuario eliminado exitosamente")
+     
     except Exception as e:
         print(f"Error al eliminar el usuario: {str(e)}")  # Log para depuración
         flash(f"Error al eliminar el usuario: {str(e)}")

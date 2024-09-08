@@ -37,7 +37,7 @@ def login():
                     return redirect(url_for('login_controller.login'))
 
             else:
-                flash("Correo o contraseña incorrectos.")  # Mensaje para usuario no encontrado
+                flash("Correo o contraseña incorrectos.")  
                 return redirect(url_for('login_controller.login'))
 
         except Error as e:

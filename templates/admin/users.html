@@ -76,7 +76,7 @@
 						<div class="xp-searchbar">
 							<form id="searchUserForm">
 								<div class="input-group">
-									<input type="search" class="form-control" placeholder="Buscar" id="searchInput">
+									<input type="search" class="form-control" placeholder="Buscar por nombre o correo" id="searchInput">
 									<div class="input-group-append">
 										<button class="btn" type="submit" id="button-addon2">Ir</button>
 									</div>
@@ -84,7 +84,7 @@
 							</form>
 						</div>
 					</div>
-
+					
 
 
 					<div class="col-10 col-md-6 col-lg-8 order-1 order-md-3">
@@ -120,7 +120,7 @@
 				<div class="xp-breadcrumbbar text-center">
 
 					
-					<h4 class="page-title">Panel Administrativo</h4>
+					
 					<ol class="breadcrumb">
 						<li class="breadcrumb-item active" aria-curent="page"></li>
 					</ol>
@@ -172,25 +172,8 @@
 								<tr>
 									<th>
 									</th>
-									<td>{{ usuario.nombre }}</td>
-									<td>{{ usuario.email }}</td>
-									<td>{{ usuario.direccion }}</td>
-									<td>{{ usuario.telefono }}</td>
-									<td>{{ usuario.nombreRol }}</td>
-									<td>
-										<a href="#editarUsuario" class="edit-button" data-toggle="modal"
-											data-id="{{ usuario.idUsuario }}">
-											<i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>
-										</a>
-
-
-
-										<a href="#eliminarUsuario" class="delete" data-toggle="modal"
-											data-id="{{ usuario.idUsuario }}">
-											<i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i>
-										</a>
-
-									</td>
+									
+							
 								</tr>
 								{% endfor %}
 								{% else %}

@@ -116,11 +116,6 @@ document.addEventListener('DOMContentLoaded', function() {
           <button class="btn-remove" data-index="${index}" style="background-color: transparent; color: #c00000; border: none; padding: 6px; border-radius: 6px; cursor: pointer; margin-right: 6px; font-size: 12px;">
     <i class="fas fa-trash-alt" style="font-size: 14px; color: #c00000;"></i>
 </button>
-
-
-
-
-
                     <br>
                     <br>
                    
