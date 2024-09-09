@@ -51,7 +51,6 @@ def verificar_usuario():
 
         conn = create_connection()
         if conn is None:
-            flash("Error de conexión a la base de datos")
             return jsonify({"success": False, "message": "Error de conexión a la base de datos"}), 500
 
         try:
@@ -70,9 +69,10 @@ def verificar_usuario():
             user['direccion'] = direccion
             session['user'] = user
 
-            return redirect(url_for('usuarios_controller.perfil', _anchor='compras'))
+            return jsonify({"success": True}), 200
         except Exception as e:
-            return redirect(url_for('usuarios_controller.verificar_usuario'))
+            print(f"Error al actualizar los datos: {e}")  # Añade un logging más detallado
+            return jsonify({"success": False, "message": str(e)}), 500
         finally:
             cursor.close()
             close_connection(conn)
@@ -80,7 +80,6 @@ def verificar_usuario():
     # Si es una solicitud GET, obtenemos los datos actuales del usuario
     conn = create_connection()
     if conn is None:
-        flash("Error de conexión a la base de datos")
         abort(500, description="Error de conexión a la base de datos")
 
     try:
@@ -92,16 +91,16 @@ def verificar_usuario():
         """, (user_id,))
         usuario = cursor.fetchone()
         if not usuario:
-            flash("Usuario no encontrado.")
             abort(404)
     except Exception as e:
-        flash(f"Error al obtener usuario: {str(e)}")
+        print(f"Error al obtener usuario: {e}")  # Añade un logging más detallado
         usuario = {}
     finally:
         cursor.close()
         close_connection(conn)
     
     return render_template('usuario/verificacion.html', user=usuario)
+
 
 
 

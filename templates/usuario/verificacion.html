@@ -153,28 +153,31 @@
 <br>
 <br>
 <div class="verification-form-container">
-    <h1>Verificación de Datos de Compra</h1>
-    <form id="verification-form" method="POST" action="{{ url_for('usuarios_controller.verificar_usuario') }}" class="verification-form">
-        <div class="form-column">
-            <label for="nombre">Nombre</label>
-            <input type="text" id="nombre" name="nombre" required value="{{ user.nombre }}">
+  <h1>Verificación de Datos de Compra</h1>
+  <form id="verification-form" method="POST" action="{{ url_for('usuarios_controller.verificar_usuario') }}" class="verification-form">
+      <div class="form-column">
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" required value="{{ user.nombre }}">
 
-            <label for="correo">Correo Electrónico</label>
-            <input type="email" id="correo" name="correo" required value="{{ user.email }}">
-        </div>
-        <div class="form-column">
-            <label for="telefono">Teléfono</label>
-            <input type="text" id="telefono" name="telefono" required value="{{ user.telefono }}">
+          <label for="correo">Correo Electrónico</label>
+          <input type="email" id="correo" name="correo" required value="{{ user.email }}">
+      </div>
+      <div class="form-column">
+          <label for="telefono">Teléfono</label>
+          <input type="text" id="telefono" name="telefono" required value="{{ user.telefono }}">
 
-            <label for="direccion">Dirección</label>
-            <input type="text" id="direccion" name="direccion" required value="{{ user.direccion }}">
-        </div>
+          <label for="direccion">Dirección</label>
+          <input type="text" id="direccion" name="direccion" required value="{{ user.direccion }}">
+          
+      </div>
+    
       
-    </form>
-    <div class="form-submit-container">
-        <button type="submit" id="confirmar-datos">Confirmar Datos</button>
-    </div>
+  </form>
+  <div class="form-submit-container">
+    <button type="submit" id="confirmar-datos">Confirmar Datos</button>
 </div>
+</div>
+
 
 
 

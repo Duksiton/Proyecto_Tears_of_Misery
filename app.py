@@ -1,5 +1,5 @@
 # Importaciones
-from flask import Flask, render_template, flash, jsonify, request, redirect, url_for
+from flask import Flask, abort, render_template, flash, jsonify, request, redirect, url_for
 from mvc.model.db_connection import create_connection, close_connection
 from mvc.controller.producto_controller import producto_controller
 from mvc.controller.usuarios_controller import usuarios_controller, verificar_usuario
@@ -7,6 +7,9 @@ from mvc.controller.login_controller import login_controller
 from mvc.controller.registro_controller import registro_controller
 from mvc.controller.perfil_controller import perfil_controller
 from mvc.controller.logout_controller import logout_controller
+from mvc.controller.historial_compras_controller import historial_compras_controller
+from mvc.controller.perfil_controller import perfil_controller
+
 import bcrypt
 
 app = Flask(__name__)
@@ -19,6 +22,8 @@ app.register_blueprint(login_controller)
 app.register_blueprint(registro_controller)
 app.register_blueprint(perfil_controller)
 app.register_blueprint(logout_controller)
+app.register_blueprint(historial_compras_controller)
+
 
 @app.route('/')
 def index():

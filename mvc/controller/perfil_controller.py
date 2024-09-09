@@ -1,39 +1,55 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from flask import Blueprint, render_template, request, redirect, url_for, flash, session, jsonify
 from mvc.model.db_connection import create_connection
 import bcrypt
 from mysql.connector import Error
+from flask import jsonify, request
+
 
 # Crear el blueprint para el controlador de perfil
 perfil_controller = Blueprint('perfil', __name__, template_folder='templates/usuario')
 
 @perfil_controller.route('/perfil', methods=['GET', 'POST'])
 def perfil():
-    if 'user' not in session:
-        return redirect(url_for('login'))
+    idUsuario = session.get('idUsuario')
+    
+    if not idUsuario:
+        return redirect(url_for('login_controller.login'))  # Redirige a iniciar sesión si no hay un usuario autenticado
 
-    user = session['user']
-    connection = create_connection()
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
 
-    if request.method == 'POST':
-        # Si hay alguna solicitud POST para actualizar los datos del perfil
-        return actualizar_perfil(user)
+    try:
+        # Consulta para obtener los datos del perfil del usuario
+        query_perfil = "SELECT idUsuario, nombre, email, direccion, telefono FROM usuario WHERE idUsuario = %s"
+        cursor.execute(query_perfil, (idUsuario,))
+        perfil_data = cursor.fetchone()
 
-    cursor = connection.cursor(dictionary=True)
-    cursor.execute("SELECT * FROM pedido WHERE idUsuario = %s", (user['idUsuario'],))
-    pedidos = cursor.fetchall()
+        # Consulta para obtener el historial de compras del usuario
+        query_compras = """
+        SELECT idCompra, nombreProducto, imagenProducto, fechaCompra, cantidad, total, estado
+        FROM historial_compras
+        WHERE idUsuario = %s
+        """
+        cursor.execute(query_compras, (idUsuario,))
+        compras = cursor.fetchall()
 
-    # Asegúrate de obtener también la dirección del usuario
-    cursor.execute("SELECT direccion FROM usuario WHERE idUsuario = %s", (user['idUsuario'],))
-    direccion = cursor.fetchone()['direccion']
-    user['direccion'] = direccion  # Actualiza el objeto user en la sesión
+    except Exception as e:
+        print('Error al obtener datos del perfil o historial de compras:', e)
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
-    return render_template('usuario/perfil.html', user=user, pedidos=pedidos, user_id=user['idUsuario'])
-
-
+    return render_template('usuario/perfil.html', perfil=perfil_data, compras=compras)
 
 
 # Ruta para actualizar los datos del perfil
-def actualizar_perfil(user):
+@perfil_controller.route('/perfil/actualizar', methods=['POST'])
+def actualizar_perfil():
+    user = session.get('user')
+    if not user:
+        return redirect(url_for('login_controller.login'))
+
     nombre = request.form.get('nombre')
     email = request.form.get('email')
     telefono = request.form.get('telefono')
@@ -64,8 +80,6 @@ def actualizar_perfil(user):
     return redirect(url_for('perfil.perfil'))
 
 # Ruta para cambiar la contraseña
-from flask import jsonify
-
 @perfil_controller.route('/perfil/cambiar_contrasena', methods=['POST'])
 def update_password():
     user = session.get('user')
@@ -109,13 +123,12 @@ def update_password():
         cursor.close()
         connection.close()
 
-
 # Ruta para añadir una nueva dirección
 @perfil_controller.route('/perfil/añadir_direccion', methods=['POST'])
 def add_direccion():
     user = session.get('user')
     if not user:
-        return redirect(url_for('login'))
+        return redirect(url_for('login_controller.login'))
 
     direccion = request.form.get('direccion')
 
@@ -138,11 +151,15 @@ def add_direccion():
 
     return redirect(url_for('perfil.perfil'))
 
-@perfil_controller.route('/perfil/eliminar_direccion/<int:idUsuario>', methods=['DELETE'])
+
+# Ruta para eliminar un usuario
+@perfil_controller.route('/perfil/eliminar_direccion/<int:idUsuario>', methods=['POST'])
 def eliminar_direccion(idUsuario):
     user = session.get('user')
-    if not user or user['idUsuario'] != idUsuario:
-        return jsonify({'success': False, 'message': 'No autorizado'}), 403
+    if not user:
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': 'No autorizado'}), 403
+        return redirect(url_for('login_controller.login'))
 
     connection = create_connection()
     cursor = connection.cursor()
@@ -156,15 +173,22 @@ def eliminar_direccion(idUsuario):
 
         connection.commit()
         success = cursor.rowcount > 0
-        message = 'Dirección eliminada con éxito.' if success else 'Dirección no encontrada.'
+        message = 'Dirección eliminada con éxito.' if success else 'Dirección no encontrada o ya era NULL.'
+        
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': success, 'message': message})
+        
+        flash(message, "success" if success else "warning")
+        return redirect(url_for('perfil.perfil'))
         
     except Error as e:
-        success = False
-        message = f'Error al eliminar la dirección: {e}'
+        message = f"Error al eliminar la dirección: {e}"
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return jsonify({'success': False, 'message': message}), 500
+        flash(message, "danger")
+        return redirect(url_for('perfil.perfil'))
     finally:
         cursor.close()
         connection.close()
-
-    return jsonify({'success': success, 'message': message})
 
 

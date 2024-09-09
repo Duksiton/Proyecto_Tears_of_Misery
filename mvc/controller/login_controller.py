@@ -26,6 +26,7 @@ def login():
                 if bcrypt.checkpw(contrasena, user['contraseña'].encode('utf-8')):
                     # Almacena el usuario en la sesión
                     session['user'] = user
+                    session['idUsuario'] = user['idUsuario']
                     
                     # Redirige según el rol
                     if user['nombreRol'] == 'Administrador':
