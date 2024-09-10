@@ -1,4 +1,5 @@
 # Importaciones
+import shutil
 from flask import Blueprint, render_template, abort, flash, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 import os
@@ -54,6 +55,10 @@ def add_product():
     filename = secure_filename(imagen.filename)
     imagen_path = os.path.join('static/images/productos-insertados', filename)
     imagen.save(imagen_path)
+
+    # Guardar la imagen en la segunda ubicación
+    imagen_path_historial = os.path.join('static/images/historial', filename)
+    shutil.copy2(imagen_path, imagen_path_historial)
     
     conn = create_connection()
     if conn is None:

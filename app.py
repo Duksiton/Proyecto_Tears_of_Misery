@@ -1,5 +1,5 @@
 # Importaciones
-from flask import Flask, abort, render_template, flash, jsonify, request,session,redirect, url_for
+from flask import Flask, abort, render_template, flash, jsonify, request, send_from_directory,session,redirect, url_for
 from mvc.model.db_connection import create_connection, close_connection
 from mvc.controller.producto_controller import producto_controller
 from mvc.controller.usuarios_controller import usuarios_controller, verificar_usuario
@@ -70,6 +70,11 @@ def verificacion(id):
     return verificar_usuario(id)  # Redirige a la función que proporciona los datos del usuario
 
 
+@app.route('/static/images/historial/<filename>')
+def serve_image(filename):
+    return send_from_directory(os.path.join('static', 'images', 'historial'), filename)
+
+# Ruta para guardar la compra (sin cambios, para referencia)
 @app.route('/api/guardar_compra', methods=['POST'])
 def guardar_compra():
     try:
@@ -82,26 +87,13 @@ def guardar_compra():
         cursor = conn.cursor()
 
         for producto in productos:
-            ruta_imagen_original = os.path.join('static', 'images', 'productos-insertados', producto['imagenProducto'])
             nombre_imagen_historial = producto['imagenProducto']
-            ruta_imagen_historial = os.path.join('static', 'images', 'historial', nombre_imagen_historial)
+            ruta_imagen_original = os.path.join('static', 'images', 'historial', nombre_imagen_historial)
 
+            # Verificar si el archivo de imagen existe
             if not os.path.isfile(ruta_imagen_original):
                 print(f"Imagen no encontrada: {ruta_imagen_original}")
-                continue
-
-            os.makedirs(os.path.dirname(ruta_imagen_historial), exist_ok=True)
-
-            try:
-                shutil.copy2(ruta_imagen_original, ruta_imagen_historial)  
-                print(f"Imagen copiada a {ruta_imagen_historial}")
-            except FileNotFoundError:
-                print(f"Error: La imagen original no existe - {ruta_imagen_original}")
-            except PermissionError:
-                print(f"Error: Sin permisos para copiar la imagen - {ruta_imagen_original}")
-            except Exception as e:
-                print(f"Error inesperado al copiar la imagen: {e}")
-                continue
+                nombre_imagen_historial = 'imagen_no_disponible.jpg'  # Imagen por defecto si no se encuentra
 
             query = """
             INSERT INTO historial_compras (idUsuario, idProducto, nombreProducto, imagenProducto, fechaCompra, cantidad, total)

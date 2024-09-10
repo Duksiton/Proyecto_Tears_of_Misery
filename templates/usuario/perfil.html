@@ -464,7 +464,6 @@
               <thead>
                   <tr>
                       <th>ID Pedido</th>
-                      <th></th>
                       <th>Producto</th>
                       <th>Fecha</th>
                       <th>Cantidad</th>
@@ -477,7 +476,6 @@
                       {% for compra in compras %}
                       <tr>
                           <td>{{ compra.idCompra }}</td>
-                          <td><img src="{{ url_for('static', filename='images/historial/' ~ compra.imagenProducto) }}" alt="{{ compra.nombreProducto }}" width="50"></td>
                           <td>{{ compra.nombreProducto }}</td>
                           <td>{{ compra.fechaCompra }}</td>
                           <td>{{ compra.cantidad }}</td>
