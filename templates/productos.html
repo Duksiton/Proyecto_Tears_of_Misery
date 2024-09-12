@@ -111,7 +111,11 @@
                     {% for producto in productos %}
                     <div class="product">
                         <a href="{{ url_for('check_product', id_producto=producto.idProducto) }}">
+<<<<<<< HEAD
                             <img src="{{ url_for('static', filename='images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}">
+=======
+                            <img src="{{ url_for('static', filename='images/productos-insertados/' ~ producto.imagen) }}" alt="{{ producto.nombre }}">
+>>>>>>> master
                             <h3>{{ producto.nombre }}</h3>
                             <p>${{ producto.precio }}</p> <!-- Mostrando el precio ya formateado -->
                         </a>

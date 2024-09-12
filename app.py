@@ -1,5 +1,9 @@
 # Importaciones
+<<<<<<< HEAD
 from flask import Flask, abort, render_template, flash, jsonify, request, redirect, url_for
+=======
+from flask import Flask, abort, render_template, flash, jsonify, request, send_from_directory,session,redirect, url_for
+>>>>>>> master
 from mvc.model.db_connection import create_connection, close_connection
 from mvc.controller.producto_controller import producto_controller
 from mvc.controller.usuarios_controller import usuarios_controller, verificar_usuario
@@ -7,8 +11,16 @@ from mvc.controller.login_controller import login_controller
 from mvc.controller.registro_controller import registro_controller
 from mvc.controller.perfil_controller import perfil_controller
 from mvc.controller.logout_controller import logout_controller
+<<<<<<< HEAD
 from mvc.controller.historial_compras_controller import historial_compras_controller
 from mvc.controller.perfil_controller import perfil_controller
+=======
+from mvc.controller.perfil_controller import perfil_controller
+from mvc.controller.pedidos_controller import pedidos_controller
+from mvc.controller.compras_controller import compras_controller
+import shutil
+import os
+>>>>>>> master
 
 import bcrypt
 
@@ -22,7 +34,16 @@ app.register_blueprint(login_controller)
 app.register_blueprint(registro_controller)
 app.register_blueprint(perfil_controller)
 app.register_blueprint(logout_controller)
+<<<<<<< HEAD
 app.register_blueprint(historial_compras_controller)
+=======
+app.register_blueprint(pedidos_controller)
+app.register_blueprint(compras_controller)
+
+
+
+
+>>>>>>> master
 
 
 @app.route('/')
@@ -62,6 +83,169 @@ def verificacion(id):
     return verificar_usuario(id)  # Redirige a la función que proporciona los datos del usuario
 
 
+<<<<<<< HEAD
+=======
+@app.route('/static/images/historial/<filename>')
+def serve_image(filename):
+    return send_from_directory(os.path.join('static', 'images', 'historial'), filename)
+
+# Ruta para guardar la compra (sin cambios, para referencia)
+@app.route('/api/guardar_compra', methods=['POST'])
+def guardar_compra():
+    try:
+        data = request.get_json()
+        productos = data.get('productos', [])
+        total = data.get('total', 0)
+        fechaCompra = data.get('fechaCompra', None)
+
+        conn = create_connection()
+        cursor = conn.cursor()
+
+        for producto in productos:
+            nombre_imagen_historial = producto['imagenProducto']
+            ruta_imagen_original = os.path.join('static', 'images', 'historial', nombre_imagen_historial)
+
+            # Verificar si el archivo de imagen existe
+            if not os.path.isfile(ruta_imagen_original):
+                print(f"Imagen no encontrada: {ruta_imagen_original}")
+                nombre_imagen_historial = 'imagen_no_disponible.jpg'  # Imagen por defecto si no se encuentra
+
+            query = """
+            INSERT INTO historial_compras (idUsuario, idProducto, nombreProducto, imagenProducto, fechaCompra, cantidad, total)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            cursor.execute(query, (
+                producto['idUsuario'],
+                producto['idProducto'],
+                producto['nombreProducto'],
+                nombre_imagen_historial,
+                fechaCompra,
+                producto['cantidad'],
+                "{:,.0f}".format(float(producto['total']))
+            ))
+
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+        return jsonify({'success': True, 'message': 'Compra guardada con éxito'})
+
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+    
+@app.route('/api/pedidos', methods=['GET'])
+def obtener_pedidos():
+    try:
+        conn = create_connection()
+        cursor = conn.cursor()
+        query = "SELECT hc.idCompra, hc.nombreProducto, hc.fechaCompra, u.email, hc.total, hc.estado FROM historial_compras hc JOIN usuario u ON hc.idUsuario = u.idUsuario"
+        cursor.execute(query)
+        pedidos = cursor.fetchall()
+        pedidos_formateados = []
+        for pedido in pedidos:
+            fecha_formateada = pedido[2].strftime('%Y-%m-%d')  # Formatear fecha
+            total_formateado = "${:,.3f} ".format(pedido[4])  # Formatear precio
+            pedidos_formateados.append({
+                'idCompra': pedido[0],
+                'nombreProducto': pedido[1],
+                'fechaCompra': fecha_formateada,
+                'email': pedido[3],
+                'total': total_formateado,
+                'estado': pedido[5]
+            })
+        cursor.close()
+        conn.close()
+        return jsonify(pedidos_formateados)
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+    
+
+@app.route('/api/actualizar_pedido', methods=['POST'])
+def actualizar_pedido():
+    try:
+        data = request.form
+        idPedido = data.get('idPedido')
+        estado = data.get('estado')
+        conn = create_connection()
+        cursor = conn.cursor()
+        query = "UPDATE historial_compras SET estado = %s WHERE idCompra = %s"
+        cursor.execute(query, (estado, idPedido))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return '', 204  # Devolvemos una respuesta vacía con código 204
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)})
+
+    
+@app.route('/api/historial-compras', methods=['GET'])
+def get_historial_compras():
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        page = int(request.args.get('page', 1))
+        items_per_page = int(request.args.get('items_per_page', 5))
+        offset = (page - 1) * items_per_page
+        search_query = request.args.get('query', '')
+
+        # Construcción de la consulta con búsqueda y paginación
+        query = """
+        SELECT hc.idCompra, hc.nombreProducto, hc.fechaCompra, u.email, hc.total, hc.estado
+        FROM historial_compras hc
+        JOIN usuario u ON hc.idUsuario = u.idUsuario
+        WHERE hc.idCompra LIKE %s OR hc.nombreProducto LIKE %s OR hc.fechaCompra LIKE %s OR u.email LIKE %s OR hc.total LIKE %s
+        LIMIT %s OFFSET %s
+        """
+        like_query = f"%{search_query}%"
+        cursor.execute(query, (like_query, like_query, like_query, like_query, like_query, items_per_page, offset))
+        historial_compras = cursor.fetchall()
+
+        # Consulta para obtener el total de historial de compras sin paginación
+        count_query = """
+        SELECT COUNT(*) AS total
+        FROM historial_compras hc
+        JOIN usuario u ON hc.idUsuario = u.idUsuario
+        WHERE hc.idCompra LIKE %s OR hc.nombreProducto LIKE %s OR hc.fechaCompra LIKE %s OR u.email LIKE %s OR hc.total LIKE %s
+        """
+        cursor.execute(count_query, (like_query, like_query, like_query, like_query, like_query))
+        total = cursor.fetchone()['total']
+
+        return jsonify({'historial_compras': historial_compras, 'total': total})
+    except Exception as e:
+        print('Error al obtener historial de compras:', e)
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@app.route('/api/actualizar_pedido', methods=['POST'])
+def actualizar_estado_pedido():
+    conn = create_connection()
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        id_pedido = request.form['idPedido']
+        estado = request.form['estado']
+
+        query = """
+        UPDATE historial_compras
+        SET estado = %s
+        WHERE idCompra = %s
+        """
+        cursor.execute(query, (estado, id_pedido))
+        conn.commit()
+
+        return jsonify({'mensaje': 'Estado actualizado correctamente'})
+    except Exception as e:
+        print('Error al actualizar estado:', e)
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
+>>>>>>> master
 @app.route('/productos')
 def mostrar_productos():
     connection = create_connection()
@@ -254,6 +438,16 @@ def actualizar_contrasenas_usuarios():
 # Llama a la función de actualización antes de iniciar la aplicación
 actualizar_contrasenas_usuarios()
 
+<<<<<<< HEAD
+=======
+@app.route('/api/estado_sesion', methods=['GET'])
+def estado_sesion():
+    if 'idUsuario' in session:
+        return jsonify({'usuarioLogueado': True, 'idUsuario': session['idUsuario']})
+    else:
+        return jsonify({'usuarioLogueado': False})
+    
+>>>>>>> master
 
 if __name__ == '__main__':
     print("Iniciando la aplicación...")

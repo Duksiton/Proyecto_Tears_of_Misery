@@ -43,7 +43,10 @@ def verificar_usuario():
     user_id = user.get('idUsuario')
 
     if request.method == 'POST':
+<<<<<<< HEAD
         # Obtén los datos del formulario
+=======
+>>>>>>> master
         nombre = request.form.get('nombre')
         correo = request.form.get('correo')
         telefono = request.form.get('telefono')
@@ -62,7 +65,10 @@ def verificar_usuario():
             """, (nombre, correo, telefono, direccion, user_id))
             conn.commit()
             
+<<<<<<< HEAD
             # Actualizar la sesión con los nuevos datos
+=======
+>>>>>>> master
             user['nombre'] = nombre
             user['email'] = correo
             user['telefono'] = telefono
@@ -71,13 +77,21 @@ def verificar_usuario():
 
             return jsonify({"success": True}), 200
         except Exception as e:
+<<<<<<< HEAD
             print(f"Error al actualizar los datos: {e}")  # Añade un logging más detallado
             return jsonify({"success": False, "message": str(e)}), 500
+=======
+            print(f"Error al actualizar los datos: {e}")
+            return jsonify({"success": False, "message": "Error al actualizar los datos."}), 500
+>>>>>>> master
         finally:
             cursor.close()
             close_connection(conn)
 
+<<<<<<< HEAD
     # Si es una solicitud GET, obtenemos los datos actuales del usuario
+=======
+>>>>>>> master
     conn = create_connection()
     if conn is None:
         abort(500, description="Error de conexión a la base de datos")
@@ -93,7 +107,11 @@ def verificar_usuario():
         if not usuario:
             abort(404)
     except Exception as e:
+<<<<<<< HEAD
         print(f"Error al obtener usuario: {e}")  # Añade un logging más detallado
+=======
+        print(f"Error al obtener usuario: {e}")
+>>>>>>> master
         usuario = {}
     finally:
         cursor.close()
@@ -107,6 +125,10 @@ def verificar_usuario():
 
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 #Obtenemos productos para organizarlos en listas
 @usuarios_controller.route('/usuarios/<int:id>', methods=['GET'])
 def get_user(id):

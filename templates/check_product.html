@@ -66,7 +66,11 @@
     <main>
         {% if producto %}
             <div class="container-img">
+<<<<<<< HEAD
                 <img src="{{ url_for('static', filename='images/' ~ producto.imagen) }}" alt="imagen-producto" />
+=======
+                <img src="{{ url_for('static', filename='images/productos-insertados/' ~ producto.imagen) }}" alt="{{ producto.nombre }}">
+>>>>>>> master
             </div>
             <div class="container-info-product">
                 <div class="container-price">
@@ -102,7 +106,11 @@
                 <div class="container-add-cart" style="display: flex; justify-content: center; margin-top: 20px;">
                     <div class="product">
                         <button id="add-to-cart" class="btn-2" 
+<<<<<<< HEAD
                                 data-img="{{ url_for('static', filename='images/' ~ producto.imagen) }}" 
+=======
+                                data-img="{{ url_for('static', filename='images/productos-insertados/' ~ producto.imagen) }}" 
+>>>>>>> master
                                 data-product-id="{{ producto.idProducto }}" 
                                 data-name="{{ producto.nombre }}" 
                                 data-price="{{ producto.precio }}"
@@ -117,9 +125,30 @@
                         <h4>Descripción</h4>
                         <i class="fa-solid fa-chevron-down"></i>
                     </div>
+<<<<<<< HEAD
                     <div class="text-description">
                         <p>{{ producto.descripcion }}</p>
                     </div>
+=======
+                    <br>
+                    <br>
+                    <div class="descripcion-container">
+                        <p>{{ producto.descripcion }}</p>
+                    </div>
+                    
+                    <style>
+                    .descripcion-container {
+                        max-width: 500px; /* Ajusta el ancho máximo según tus necesidades */
+                        word-wrap: break-word; /* Permite que el texto se ajuste a las líneas */
+                        margin: 0 auto; /* Centra el contenedor en la página */
+                    }
+                    
+                    .descripcion-container p {
+                        margin: 0; /* Elimina el margen predeterminado del párrafo */
+                    }
+                    </style>
+                    
+>>>>>>> master
                 </div>
             </div>
         {% else %}

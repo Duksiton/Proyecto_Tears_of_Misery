@@ -56,7 +56,17 @@
 					</a>
 				</li>
 
+<<<<<<< HEAD
 
+=======
+				<!-- Pedidos -->
+				<li >
+					<a href="{{ url_for('pedidos_controller.ver_pedidos') }}" class="orders">
+						<i class="material-icons">shopping_cart</i>Pedidos
+					</a>
+					
+				</li>
+>>>>>>> master
 
 		</div>
 
@@ -174,11 +184,16 @@
 									<th>
 									<th>Imagen</th>
 									<th>Nombre</th>
+<<<<<<< HEAD
 									<th>Descripción</th>
 									<th>Precio</th>
 									<th>Stock</th>
 									<th>Categoría</th>
 									<th>Talla</th>
+=======
+									<th>Precio</th>
+									<th>Categoría</th>
+>>>>>>> master
 									<th>Acciones</th>
 								</tr>
 							</thead>
@@ -192,6 +207,7 @@
 										</span>
 									</th>
 									<td>
+<<<<<<< HEAD
 										<img src="{{ url_for('static', filename='images/' + producto['imagen']) }}"
 											alt="{{ producto['nombre'] }}" style="width: 50px; height: 50px;">
 									</td>
@@ -201,6 +217,14 @@
 									<td>{{ producto['stock'] }}</td>
 									<td>{{ producto['categoria'] }}</td>
 									<td>{{ producto['talla'] }}</td>
+=======
+										<img src="{{ url_for('static', filename='images/productos-insertados/' + producto['imagen']) }}"
+											alt="{{ producto['nombre'] }}" style="width: 50px; height: 50px;">
+									</td>
+									<td>{{ producto['nombre'] }}</td>
+									<td>${{ "{:,.0f}".format(producto['precio']).replace(',', '.') }}</td>
+									<td>{{ producto['categoria'] }}</td>
+>>>>>>> master
 									<td>
 										<a href="#editarProducto" class="edit-button" data-toggle="modal"
 											data-id="{{ producto.idProducto }}">

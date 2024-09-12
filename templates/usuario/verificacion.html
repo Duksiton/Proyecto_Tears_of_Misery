@@ -152,6 +152,7 @@
 <br>
 <br>
 <br>
+<<<<<<< HEAD
 <div class="verification-form-container">
   <h1>Verificación de Datos de Compra</h1>
   <form id="verification-form" method="POST" action="{{ url_for('usuarios_controller.verificar_usuario') }}" class="verification-form">
@@ -177,6 +178,33 @@
     <button type="submit" id="confirmar-datos">Confirmar Datos</button>
 </div>
 </div>
+=======
+      <div class="verification-form-container">
+        <h1>Verificación de Datos de Compra</h1>
+        <form id="verification-form" method="POST" action="{{ url_for('usuarios_controller.verificar_usuario') }}" class="verification-form">
+            <div class="form-column">
+                <label for="nombre">Nombre</label>
+                <input type="text" id="nombre" name="nombre" required value="{{ user.nombre }}">
+
+                <label for="correo">Correo Electrónico</label>
+                <input type="email" id="correo" name="correo" required value="{{ user.email }}">
+            </div>
+            <div class="form-column">
+                <label for="telefono">Teléfono</label>
+                <input type="text" id="telefono" name="telefono" required value="{{ user.telefono }}">
+
+                <label for="direccion">Dirección</label>
+                <input type="text" id="direccion" name="direccion" required value="{{ user.direccion }}">
+                
+            </div>
+          
+            
+        </form>
+        <div class="form-submit-container">
+          <button type="submit" id="confirmar-datos">Confirmar Datos</button>
+      </div>
+      </div>
+>>>>>>> master
 
 
 
@@ -232,6 +260,7 @@
       </footer>
 
       <script>
+<<<<<<< HEAD
         function toggleMenu() {
           const menu = document.getElementById("userMenu");
           menu.style.display = menu.style.display === "block" ? "none" : "block";
@@ -423,6 +452,164 @@
         actualizarBotonExplorar();
     });
 </script>
+=======
+        // Función para alternar el menú
+        function toggleMenu() {
+            const menu = document.getElementById("userMenu");
+            menu.style.display = menu.style.display === "block" ? "none" : "block";
+        }
+    
+        // Ocultar el menú al hacer clic fuera
+        window.onclick = function (event) {
+            if (!event.target.matches(".fas")) {
+                const dropdowns = document.getElementsByClassName("dropdown-menu");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.style.display === "block") {
+                        openDropdown.style.display = "none";
+                    }
+                }
+            }
+        };
+    
+        // Función para abrir pestañas
+        function openTab(event, tabId) {
+            // Oculta todas las pestañas
+            var tabs = document.querySelectorAll('.tab-content');
+            tabs.forEach(function(tab) {
+                tab.style.display = 'none';
+            });
+    
+            // Desactiva todos los botones
+            var buttons = document.querySelectorAll('.tablink');
+            buttons.forEach(function(button) {
+                button.classList.remove('active');
+            });
+    
+            // Muestra la pestaña activa
+            document.getElementById(tabId).style.display = 'block';
+    
+            // Activa el botón de la pestaña
+            event.currentTarget.classList.add('active');
+        }
+    
+        // Abre la pestaña de compras si el fragmento de URL es '#compras'
+        document.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash;
+            if (hash === '#compras') {
+                document.querySelector('button[onclick="openTab(event, \'compras\')"]').click();
+            }
+        });
+    
+        // Maneja la lógica para el botón "Confirmar Datos"
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listener para el botón "Confirmar Datos"
+            const confirmarDatosBtn = document.getElementById('confirmar-datos');
+            
+            confirmarDatosBtn.addEventListener('click', function(event) {
+                // Evita el comportamiento predeterminado del botón
+                event.preventDefault();
+                
+                // Obtén el formulario
+                const formulario = document.getElementById('verification-form');
+                
+                // Obtén los datos del formulario
+                const formData = new FormData(formulario);
+                
+                // Validación de campos
+                const nombre = formData.get('nombre').trim();
+                const correo = formData.get('correo').trim();
+                const telefono = formData.get('telefono').trim();
+                const direccion = formData.get('direccion').trim();
+    
+                if (!nombre || !correo || !telefono || !direccion) {
+                    alert('Por favor, completa todos los campos.');
+                    return;
+                }
+    
+                // Envía el formulario usando fetch
+                fetch(formulario.action, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    // Verifica si la respuesta HTTP es exitosa
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(text || 'Error en la respuesta del servidor');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Redirige a la página de perfil y abre la pestaña de compras
+                        window.location.href = '/perfil#compras';
+                    } else {
+                        // Maneja el error de actualización aquí
+                        alert(data.message || 'Error al actualizar los datos.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error al enviar el formulario:', error);
+                    alert('Error al enviar el formulario: ' + error.message);
+                });
+            });
+    
+            // Verifica el fragmento de URL para la sección de verificación
+            const hash = window.location.hash;
+            if (hash === '#verificacion') {
+                console.log('Redirigido a la sección de verificación');
+            }
+    
+            // Actualiza la visibilidad del botón "Explorar más productos"
+            function actualizarBotonExplorar() {
+                const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+                const explorarBtn = document.getElementById('explorar');
+                
+                // Mostrar el botón si hay productos en el carrito, de lo contrario, ocultarlo
+                if (carrito.length > 0) {
+                    explorarBtn.style.display = 'block';
+                } else {
+                    explorarBtn.style.display = 'none';
+                }
+            }
+    
+            // Ejecutar la función para actualizar el botón al cargar la página
+            actualizarBotonExplorar();
+        });
+    
+        // Función para agregar productos al carrito
+        function agregarAlCarrito(product) {
+            const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+            const index = carrito.findIndex(item => item.name === product.name && item.size === product.size);
+    
+            // Si el producto ya está en el carrito, aumentar la cantidad
+            if (index !== -1) {
+                carrito[index].quantity += 1;
+                mostrarMensaje(`Cantidad de "${product.name}" (${product.size}) aumentada. Ahora tienes ${carrito[index].quantity}.`, 'success');
+            } else {
+                // Si no, agregar el nuevo producto al carrito
+                carrito.push(product);
+                mostrarMensaje(`Nuevo producto "${product.name}" (${product.size}) agregado al carrito.`, 'success');
+            }
+    
+            // Guardar el carrito en localStorage
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+    
+            // Actualizar la visualización del carrito
+            actualizarCarrito();
+    
+            // Actualizar la visibilidad del botón "Explorar más productos"
+            actualizarBotonExplorar();
+        }
+    
+        // Mostrar el ID del usuario para depuración
+        const userId = "{{ user_id }}";
+        console.log("User ID:", userId); // Verifica que userId esté definido correctamente
+    </script>
+    
+>>>>>>> master
 
   
       <script src="{{ url_for('static', filename='js/script_pro_true.js') }}"></script>

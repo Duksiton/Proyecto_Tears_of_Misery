@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', function () {
         products.forEach(product => {
             const row = productosTable.insertRow();
             row.insertCell()
+<<<<<<< HEAD
             row.insertCell().innerHTML = `<img src="/static/images/${product.imagen}" alt="${product.nombre}" style="width: 50px; height: 50px;">`;
             row.insertCell().textContent = product.nombre;
             row.insertCell().textContent = product.descripcion;
@@ -38,6 +39,12 @@ document.addEventListener('DOMContentLoaded', function () {
             row.insertCell().textContent = product.stock;
             row.insertCell().textContent = product.categoriaNombre;
             row.insertCell().textContent = product.talla;
+=======
+            row.insertCell().innerHTML = `<img src="/static/images/productos-insertados/${product.imagen}" alt="${product.nombre}" style="width: 50px; height: 50px;">`;
+            row.insertCell().textContent = product.nombre;
+            row.insertCell().textContent = `$${product.precio.toLocaleString()}`;
+            row.insertCell().textContent = product.categoriaNombre;
+>>>>>>> master
             row.insertCell().innerHTML = `
                 <a href="#editarProducto" class="edit-button" data-toggle="modal" data-id="${product.idProducto}">
                     <i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i>

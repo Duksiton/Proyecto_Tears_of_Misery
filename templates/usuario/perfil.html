@@ -463,8 +463,12 @@
           <table>
               <thead>
                   <tr>
+<<<<<<< HEAD
                       <th>ID Compra</th>
                       <th></th>
+=======
+                      <th>ID Pedido</th>
+>>>>>>> master
                       <th>Producto</th>
                       <th>Fecha</th>
                       <th>Cantidad</th>
@@ -477,7 +481,10 @@
                       {% for compra in compras %}
                       <tr>
                           <td>{{ compra.idCompra }}</td>
+<<<<<<< HEAD
                           <td><img src="{{ url_for('static', filename='images/' ~ compra.imagenProducto) }}" alt="{{ compra.nombreProducto }}" width="50"></td>
+=======
+>>>>>>> master
                           <td>{{ compra.nombreProducto }}</td>
                           <td>{{ compra.fechaCompra }}</td>
                           <td>{{ compra.cantidad }}</td>

@@ -20,7 +20,11 @@
         <div class="group2">
             <ul class="navigation">
                 <li><a href="{{ url_for('inicio') }}">Inicio</a></li>
+<<<<<<< HEAD
                 <li><a href="{{ url_for('productos') }}">Productos</a></li>
+=======
+                <li><a href="{{ url_for('catalogo') }}">Productos</a></li>
+>>>>>>> master
             </ul>
         </div>
         <div class="group2">
@@ -121,7 +125,11 @@
                     {% for producto in productos %}
                     <div class="product">
                         <a href="{{ url_for('producto_controller.producto', id=producto.idProducto) }}">
+<<<<<<< HEAD
                             <img src="{{ url_for('static', filename='images/' ~ producto.imagen) }}" alt="{{ producto.nombre }}">
+=======
+                            <img src="{{ url_for('static', filename='images/productos-insertados/' ~ producto.imagen) }}" alt="{{ producto.nombre }}">
+>>>>>>> master
                             <h3>{{ producto.nombre }}</h3>
                             <p>${{ producto.precio }}</p> <!-- Mostrando el precio ya formateado -->
 
