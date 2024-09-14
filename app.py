@@ -1,9 +1,5 @@
 # Importaciones
-<<<<<<< HEAD
-from flask import Flask, abort, render_template, flash, jsonify, request, redirect, url_for
-=======
 from flask import Flask, abort, render_template, flash, jsonify, request, send_from_directory,session,redirect, url_for
->>>>>>> master
 from mvc.model.db_connection import create_connection, close_connection
 from mvc.controller.producto_controller import producto_controller
 from mvc.controller.usuarios_controller import usuarios_controller, verificar_usuario
@@ -11,16 +7,12 @@ from mvc.controller.login_controller import login_controller
 from mvc.controller.registro_controller import registro_controller
 from mvc.controller.perfil_controller import perfil_controller
 from mvc.controller.logout_controller import logout_controller
-<<<<<<< HEAD
 from mvc.controller.historial_compras_controller import historial_compras_controller
-from mvc.controller.perfil_controller import perfil_controller
-=======
 from mvc.controller.perfil_controller import perfil_controller
 from mvc.controller.pedidos_controller import pedidos_controller
 from mvc.controller.compras_controller import compras_controller
 import shutil
 import os
->>>>>>> master
 
 import bcrypt
 
@@ -34,16 +26,13 @@ app.register_blueprint(login_controller)
 app.register_blueprint(registro_controller)
 app.register_blueprint(perfil_controller)
 app.register_blueprint(logout_controller)
-<<<<<<< HEAD
 app.register_blueprint(historial_compras_controller)
-=======
 app.register_blueprint(pedidos_controller)
 app.register_blueprint(compras_controller)
 
 
 
 
->>>>>>> master
 
 
 @app.route('/')
@@ -83,8 +72,6 @@ def verificacion(id):
     return verificar_usuario(id)  # Redirige a la función que proporciona los datos del usuario
 
 
-<<<<<<< HEAD
-=======
 @app.route('/static/images/historial/<filename>')
 def serve_image(filename):
     return send_from_directory(os.path.join('static', 'images', 'historial'), filename)
@@ -245,7 +232,6 @@ def actualizar_estado_pedido():
         cursor.close()
         conn.close()
 
->>>>>>> master
 @app.route('/productos')
 def mostrar_productos():
     connection = create_connection()
@@ -438,8 +424,6 @@ def actualizar_contrasenas_usuarios():
 # Llama a la función de actualización antes de iniciar la aplicación
 actualizar_contrasenas_usuarios()
 
-<<<<<<< HEAD
-=======
 @app.route('/api/estado_sesion', methods=['GET'])
 def estado_sesion():
     if 'idUsuario' in session:
@@ -447,7 +431,6 @@ def estado_sesion():
     else:
         return jsonify({'usuarioLogueado': False})
     
->>>>>>> master
 
 if __name__ == '__main__':
     print("Iniciando la aplicación...")

@@ -66,11 +66,8 @@
     <main>
         {% if producto %}
             <div class="container-img">
-<<<<<<< HEAD
-                <img src="{{ url_for('static', filename='images/' ~ producto.imagen) }}" alt="imagen-producto" />
-=======
+
                 <img src="{{ url_for('static', filename='images/productos-insertados/' ~ producto.imagen) }}" alt="{{ producto.nombre }}">
->>>>>>> master
             </div>
             <div class="container-info-product">
                 <div class="container-price">
@@ -106,11 +103,8 @@
                 <div class="container-add-cart" style="display: flex; justify-content: center; margin-top: 20px;">
                     <div class="product">
                         <button id="add-to-cart" class="btn-2" 
-<<<<<<< HEAD
-                                data-img="{{ url_for('static', filename='images/' ~ producto.imagen) }}" 
-=======
+
                                 data-img="{{ url_for('static', filename='images/productos-insertados/' ~ producto.imagen) }}" 
->>>>>>> master
                                 data-product-id="{{ producto.idProducto }}" 
                                 data-name="{{ producto.nombre }}" 
                                 data-price="{{ producto.precio }}"
@@ -125,11 +119,7 @@
                         <h4>Descripción</h4>
                         <i class="fa-solid fa-chevron-down"></i>
                     </div>
-<<<<<<< HEAD
-                    <div class="text-description">
-                        <p>{{ producto.descripcion }}</p>
-                    </div>
-=======
+
                     <br>
                     <br>
                     <div class="descripcion-container">
@@ -148,7 +138,6 @@
                     }
                     </style>
                     
->>>>>>> master
                 </div>
             </div>
         {% else %}

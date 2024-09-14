@@ -1,8 +1,5 @@
 # Importaciones
-<<<<<<< HEAD
-=======
 import shutil
->>>>>>> master
 from flask import Blueprint, render_template, abort, flash, request, redirect, url_for, jsonify
 from werkzeug.utils import secure_filename
 import os
@@ -56,17 +53,13 @@ def add_product():
         return redirect(url_for('producto_controller.admin'))
     
     filename = secure_filename(imagen.filename)
-<<<<<<< HEAD
-    imagen_path = os.path.join('static/images', filename)
-    imagen.save(imagen_path)
-=======
+
     imagen_path = os.path.join('static/images/productos-insertados', filename)
     imagen.save(imagen_path)
 
     # Guardar la imagen en la segunda ubicación
     imagen_path_historial = os.path.join('static/images/historial', filename)
     shutil.copy2(imagen_path, imagen_path_historial)
->>>>>>> master
     
     conn = create_connection()
     if conn is None:
@@ -268,11 +261,8 @@ def delete_product(id):
             imagen = producto[0]
             if imagen and imagen != "default.jpg":  # Verifica que la imagen no sea una predeterminada
                 # Elimina la imagen del servidor
-<<<<<<< HEAD
-                os.remove(os.path.join('static', 'images', imagen))
-=======
+
                 os.remove(os.path.join('static', 'images', 'productos-insertados', imagen))
->>>>>>> master
 
             # Luego, eliminamos el producto de la base de datos
             cursor.execute("DELETE FROM producto WHERE idProducto = %s", (id,))

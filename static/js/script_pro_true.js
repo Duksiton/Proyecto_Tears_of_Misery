@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
-<<<<<<< HEAD
-=======
+
     // Inicializar carrito desde localStorage
->>>>>>> master
     const carrito = JSON.parse(localStorage.getItem('carrito')) || [];
     const totalCarritoSpan = document.getElementById('total-valor');
     const carritoContainer = document.getElementById('carrito');
@@ -10,11 +8,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const verMasContainer = document.getElementById('ver-mas-container');
     const verMasLink = document.getElementById('toggle-productos');
     let mostrarMas = false;
-<<<<<<< HEAD
-=======
+
     let usuarioLogueado = false;
     let idUsuario = null;
->>>>>>> master
 
     // Ocultar el carrito inicialmente
     carritoContainer.style.display = 'none';
@@ -62,29 +58,12 @@ document.addEventListener('DOMContentLoaded', function () {
     modal.appendChild(modalContent);
 
     function formatearPrecio(precio) {
-<<<<<<< HEAD
-        // Redondear el precio a 2 decimales
-        const precioRedondeado = Math.round(precio * 100) / 100;
-    
-        // Convertir el número a cadena para manipular el formato
-        let [parteEntera, parteDecimal] = precioRedondeado.toFixed(3).split('.');
-    
-        // Formatear la parte entera con separadores de miles
-        parteEntera = parteEntera.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    
-        // Concatenar la parte decimal y asegurar el formato correcto
-        return `$${parteEntera}.${parteDecimal}`;
-    }
-    
-    
-    
-=======
+
         const precioRedondeado = Math.round(precio * 100) / 100;
         let [parteEntera, parteDecimal] = precioRedondeado.toFixed(3).split('.');
         parteEntera = parteEntera.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         return `$${parteEntera}.${parteDecimal}`;
     }
->>>>>>> master
 
     function mostrarMensaje(mensaje, tipo = 'success') {
         modalContent.innerHTML = `
@@ -161,10 +140,7 @@ document.addEventListener('DOMContentLoaded', function () {
         actualizarCarrito();
     }
 
-<<<<<<< HEAD
-    // Supongamos que tienes una función o lógica que verifica si el usuario está logueado
-    const usuarioLogueado = true;
-=======
+
     // Obtener el estado de inicio de sesión del servidor
     fetch('/api/estado_sesion')
         .then(response => response.json())
@@ -176,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function () {
         .catch(error => {
             console.error('Error al obtener el estado de inicio de sesión:', error);
         });
->>>>>>> master
 
     document.getElementById('productos').addEventListener('click', function (e) {
         const index = parseInt(e.target.dataset.index);
@@ -216,28 +191,13 @@ document.addEventListener('DOMContentLoaded', function () {
             mostrarMensaje('El carrito está vacío.', 'info');
             return;
         }
-<<<<<<< HEAD
 
-=======
     
->>>>>>> master
         if (!usuarioLogueado) {
             mostrarMensaje('Primero inicia sesión para realizar la compra.', 'info');
             return;
         }
-<<<<<<< HEAD
 
-        const total = carrito.reduce((sum, item) => sum + item.price * item.quantity, 0);
-        mostrarMensaje(`La suma de tus productos es de: ${formatearPrecio(total)}, serás redirigido para confirmar tus datos, ¡gracias por la compra!`);
-
-        carrito.length = 0;
-        actualizarCarrito();
-
-        setTimeout(function () {
-            window.location.href = '/verificar_usuario';
-        }, 5000);
-    });
-=======
     
         const total = carrito.reduce((sum, item) => sum + item.price * item.quantity, 0);
         mostrarMensaje(`La suma de tus productos es de: ${formatearPrecio(total)}, serás redirigido para confirmar tus datos, ¡gracias por la compra!`);
@@ -289,7 +249,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 2500);
     });
     
->>>>>>> master
 
     verMasLink.addEventListener('click', function () {
         mostrarMas = !mostrarMas;
